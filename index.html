@@ -12,21 +12,12 @@
         body { font-family: 'Inter', sans-serif; background-color: #fef2f2; margin: 0; padding: 0; }
         .card { background: white; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid #fca5a5; }
         .door-section { border-left: 8px solid #dc2626; margin-bottom: 1rem; }
-        
-        .action-button { 
-            display: flex !important; align-items: center !important; justify-content: center !important; 
-            height: 48px !important; min-width: 150px; padding: 0 20px !important; 
-            border-radius: 10px; font-weight: 800; transition: all 0.2s; font-size: 14px;
-        }
-
+        .action-button { display: flex !important; align-items: center !important; justify-content: center !important; height: 48px !important; min-width: 150px; padding: 0 20px !important; border-radius: 10px; font-weight: 800; transition: all 0.2s; font-size: 14px; }
         .input-field { width: 100%; padding: 10px; border: 1px solid #fca5a5; border-radius: 6px; outline: none; height: 42px; font-size: 14px; }
         .textarea-field { width: 100%; padding: 10px; border: 1px solid #fca5a5; border-radius: 6px; outline: none; min-height: 42px; height: 42px; resize: none; font-size: 14px; }
-        
         .collapsed .door-content { display: none; }
-        
         .no-print { display: block; }
         @media print { .no-print { display: none !important; } }
-        
         .photo-preview-item { display: inline-block; margin: 10px; position: relative; }
         .photo-preview-img { width: 120px; height: 120px; object-fit: cover; border: 1px solid #fca5a5; border-radius: 4px; }
     </style>
@@ -56,7 +47,7 @@
 
         <div id="doors-container"></div>
 
-        <button id="add-door-btn" onclick="addDoor()" class="no-print w-full py-4 border-2 border-dashed border-red-400 rounded-xl text-red-600 font-bold hover:bg-red-100 transition flex items-center justify-center gap-2 mb-20 shadow-sm">
+        <button onclick="addDoor()" class="no-print w-full py-4 border-2 border-dashed border-red-400 rounded-xl text-red-600 font-bold hover:bg-red-100 transition flex items-center justify-center gap-2 mb-20 shadow-sm">
             <i data-lucide="plus-circle"></i> Nieuwe deur toevoegen
         </button>
     </div>
@@ -64,7 +55,6 @@
     <div id="pdf-export-temp" style="display:none;"></div>
 
     <script>
-        // Artikelen lijst ongewijzigd
         const artikelen = [
             {n:"74", d:"RST00U - Levering ontsluiter fail safe"}, {n:"75", d:"ST00US - Levering ontsluiter fail secure"},
             {n:"76", d:"P.a.i. elektrische ontsluiter"}, {n:"77", d:"32LP - Levering RVS sluitplaat 32LP"},
@@ -95,8 +85,6 @@
             {n:"184", d:"Hevelslot"}, {n:"185", d:"P.a.i. hevelslot"}
         ];
 
-        let doorCount = 0;
-
         function setupAutoClear(input) {
             input.addEventListener('focus', function() { if (this.value === '...') this.value = ''; });
             input.addEventListener('blur', function() {
@@ -107,20 +95,28 @@
             });
         }
 
+        function reindexDoors() {
+            const doors = document.querySelectorAll('.door-section');
+            doors.forEach((door, index) => {
+                const badge = door.querySelector('.door-number-badge');
+                if (badge) badge.innerText = index + 1;
+            });
+        }
+
         function addDoor(data = null) {
-            doorCount++;
             const container = document.getElementById('doors-container');
             const section = document.createElement('div');
             section.className = "card door-section overflow-hidden mb-4";
+            
             section.innerHTML = `
                 <div class="bg-red-50 p-4 flex justify-between items-center cursor-pointer no-print border-b border-red-100 hover:bg-red-100 transition" onclick="this.parentElement.classList.toggle('collapsed')">
                     <div class="flex items-center gap-3">
-                        <span class="bg-red-600 text-white w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold">${doorCount}</span>
+                        <span class="door-number-badge bg-red-600 text-white w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold">0</span>
                         <span class="font-bold text-red-800 uppercase text-sm">Deur: <span class="door-title-preview text-slate-500 italic">...</span></span>
                     </div>
                     <div class="flex items-center gap-4">
-                        <span class="text-[10px] font-bold text-red-500 uppercase tracking-widest flex items-center gap-1 bg-white px-2 py-1 rounded border border-red-200 shadow-sm"><i data-lucide="mouse-pointer-2" class="w-3 h-3"></i> Klap open/toe</span>
-                        <button onclick="event.stopPropagation(); if(confirm('Verwijderen?')){this.closest('.door-section').remove();}" class="bg-red-600 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold">VERWIJDER</button>
+                        <span class="text-[10px] font-bold text-red-500 uppercase tracking-widest flex items-center gap-1 bg-white px-2 py-1 rounded border border-red-200 shadow-sm"><i data-lucide="mouse-pointer-2" class="w-3 h-3"></i> Open/Toe</span>
+                        <button onclick="event.stopPropagation(); this.closest('.door-section').remove(); reindexDoors();" class="bg-red-600 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold">VERWIJDER</button>
                     </div>
                 </div>
                 <div class="door-content p-6">
@@ -138,7 +134,7 @@
                         <div><label class="text-[10px] font-bold text-red-600 uppercase mb-1">Opmerkingen</label><textarea class="textarea-field door-notes autoclear">...</textarea></div>
                     </div>
                     <div class="no-print bg-red-50 p-4 rounded-lg mt-6 border border-red-100">
-                        <label class="block text-[10px] font-bold text-red-700 mb-2 uppercase">Foto's toevoegen</label>
+                        <label class="block text-[10px] font-bold text-red-700 mb-2 uppercase">Foto's</label>
                         <input type="file" multiple accept="image/*" onchange="handlePhotos(event, this)">
                     </div>
                     <div class="photo-area mt-4 flex flex-wrap"></div>
@@ -147,6 +143,7 @@
             container.appendChild(section);
             section.querySelectorAll('.autoclear').forEach(input => setupAutoClear(input));
             if(data) fillDoorData(section, data);
+            reindexDoors();
             lucide.createIcons();
         }
 
@@ -169,13 +166,7 @@
             });
         }
 
-        // Hulpfunctie voor HTML Generatie (Gedeeld door PDF en Word)
         function generateHTMLContent() {
-            const getVal = (id) => {
-                const el = document.getElementById(id);
-                return (!el || el.value === '...') ? '' : el.value;
-            };
-
             const rawDate = document.getElementById('currentDate').value;
             let formattedDate = rawDate;
             if(rawDate) {
@@ -185,101 +176,70 @@
 
             let html = `<div style="font-family: Arial; padding: 10px;">
                 <div style="border: 2px solid #dc2626; margin-bottom: 20px;">
-                    <div style="background: #dc2626; color: white; padding: 10px; font-weight: bold; font-size: 16px;">OPMETING INBRAAKVEILIG - PROJECTOVERZICHT</div>
+                    <div style="background: #dc2626; color: white; padding: 10px; font-weight: bold; font-size: 16px;">OPMETING INBRAAKVEILIG - OVERZICHT</div>
                     <table style="width: 100%; padding: 10px; font-size: 12px;">
-                        <tr><td><strong>Klant:</strong> ${getVal('klantNaam')}</td><td><strong>Verkoper:</strong> ${getVal('verkoperNaam')}</td></tr>
-                        <tr><td><strong>Project:</strong> ${getVal('projectNaam')}</td><td><strong>Datum:</strong> ${formattedDate}</td></tr>
-                        <tr><td colspan="2"><strong>Adres:</strong> ${getVal('projectAdres')}</td></tr>
+                        <tr><td><strong>Klant:</strong> ${document.getElementById('klantNaam').value}</td><td><strong>Verkoper:</strong> ${document.getElementById('verkoperNaam').value}</td></tr>
+                        <tr><td><strong>Project:</strong> ${document.getElementById('projectNaam').value}</td><td><strong>Datum:</strong> ${formattedDate}</td></tr>
+                        <tr><td colspan="2"><strong>Adres:</strong> ${document.getElementById('projectAdres').value}</td></tr>
                     </table>
                 </div>`;
 
             document.querySelectorAll('.door-section').forEach((s, index) => {
-                let loc = s.querySelector('.door-location').value;
-                let type = s.querySelector('.door-type').value;
-                let hours = s.querySelector('.door-hours').value;
-                let notes = s.querySelector('.door-notes').value;
+                const loc = s.querySelector('.door-location').value;
+                const type = s.querySelector('.door-type').value;
                 const checked = Array.from(s.querySelectorAll('.door-item-check:checked'));
                 const photos = Array.from(s.querySelectorAll('.photo-preview-img'));
 
                 html += `<div style="${index > 0 ? 'page-break-before: always;' : ''} margin-top: 20px;">
-                    <div style="background: #444; color: white; padding: 8px; font-weight: bold; font-size: 14px;">DEUR ${index + 1}: ${type} ${loc !== '...' ? ' | ' + loc : ''}</div>
+                    <div style="background: #444; color: white; padding: 8px; font-weight: bold; font-size: 14px;">DEUR ${index + 1}: ${type} | ${loc}</div>
                     <table style="width: 100%; margin-top: 10px;">
                         <tr>
                             <td style="width: 40%; vertical-align: top; font-size: 10px;">
                                 <strong style="color: #dc2626;">ARTIKELEN:</strong><br>
-                                ${checked.length > 0 ? checked.map(c => `• ${c.dataset.n} - ${c.dataset.desc}<br>`).join('') : '<i>Geen</i>'}
-                                <br><br>
-                                <strong>Werkuren:</strong> ${hours !== '...' ? hours : '/'}<br>
-                                <strong>Opmerkingen:</strong><br>${notes !== '...' ? notes : '/'}
+                                ${checked.length > 0 ? checked.map(c => `• ${c.dataset.n} - ${c.dataset.desc}<br>`).join('') : 'Geen'}
+                                <br><strong>Uren:</strong> ${s.querySelector('.door-hours').value}<br>
+                                <strong>Nota:</strong> ${s.querySelector('.door-notes').value}
                             </td>
-                            <td style="vertical-align: top; text-align: center;">
-                                ${photos.map(img => `<img src="${img.dataset.full}" style="width: 300px; margin-bottom: 10px; border: 1px solid #ddd;">`).join('')}
-                                ${photos.length === 0 ? '<i>Geen foto</i>' : ''}
+                            <td style="text-align: center;">
+                                ${photos.map(img => `<img src="${img.dataset.full}" style="width: 280px; margin-bottom: 10px; border: 1px solid #ddd;">`).join('')}
                             </td>
                         </tr>
                     </table>
                 </div>`;
             });
-            html += `</div>`;
-            return html;
+            return html + `</div>`;
         }
 
         async function generateProfessionalPDF() {
             const temp = document.getElementById('pdf-export-temp');
             temp.innerHTML = generateHTMLContent();
             temp.style.display = 'block';
-            const opt = {
-                margin: [10, 10],
-                filename: `Opmeting_${document.getElementById('klantNaam').value}.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                pagebreak: { mode: ['css', 'legacy'] }
-            };
+            const opt = { margin: 10, filename: `Opmeting_${document.getElementById('klantNaam').value}.pdf`, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
             await html2pdf().set(opt).from(temp).save();
             temp.style.display = 'none';
         }
 
-        // NIEUWE VOLLEDIGE WORD EXPORT FUNCTIE
         function exportToWord() {
-            const htmlHeader = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Export Word</title></head><body>";
-            const htmlFooter = "</body></html>";
-            const sourceHTML = htmlHeader + generateHTMLContent() + htmlFooter;
-            
-            const blob = new Blob(['\ufeff', sourceHTML], {
-                type: 'application/msword'
-            });
-            
-            const url = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
-            const fileName = `Opmeting_${document.getElementById('klantNaam').value || 'Inbraakveilig'}.doc`;
-            
-            const downloadLink = document.createElement("a");
-            document.body.appendChild(downloadLink);
-            
-            if(navigator.msSaveOrOpenBlob ){
-                navigator.msSaveOrOpenBlob(blob, fileName);
-            } else {
-                downloadLink.href = url;
-                downloadLink.download = fileName;
-                downloadLink.click();
-            }
-            document.body.removeChild(downloadLink);
+            const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'></head><body>";
+            const footer = "</body></html>";
+            const blob = new Blob([header + generateHTMLContent() + footer], { type: 'application/msword' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `Opmeting_${document.getElementById('klantNaam').value}.doc`;
+            link.click();
         }
 
         function saveToFile() {
             const data = {
                 header: { klant: document.getElementById('klantNaam').value, project: document.getElementById('projectNaam').value, verkoper: document.getElementById('verkoperNaam').value, adres: document.getElementById('projectAdres').value, datum: document.getElementById('currentDate').value },
-                doors: []
+                doors: Array.from(document.querySelectorAll('.door-section')).map(s => ({
+                    location: s.querySelector('.door-location').value,
+                    type: s.querySelector('.door-type').value,
+                    hours: s.querySelector('.door-hours').value,
+                    notes: s.querySelector('.door-notes').value,
+                    items: Array.from(s.querySelectorAll('.door-item-check:checked')).map(c => c.dataset.n)
+                }))
             };
-            document.querySelectorAll('.door-section').forEach(s => {
-                data.doors.push({ 
-                    location: s.querySelector('.door-location').value, 
-                    type: s.querySelector('.door-type').value, 
-                    hours: s.querySelector('.door-hours').value, 
-                    notes: s.querySelector('.door-notes').value, 
-                    items: Array.from(s.querySelectorAll('.door-item-check:checked')).map(c => c.dataset.n) 
-                });
-            });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(new Blob([JSON.stringify(data)], {type: 'application/json'}));
             a.download = `Data_Inbraakveilig.json`; a.click();
@@ -294,7 +254,11 @@
                 document.getElementById('verkoperNaam').value = data.header.verkoper;
                 document.getElementById('projectAdres').value = data.header.adres;
                 document.getElementById('currentDate').value = data.header.datum;
+                
+                // WIS ALLE BESTAANDE DEUREN EERST
                 document.getElementById('doors-container').innerHTML = '';
+                
+                // VOEG ALLE DEUREN UIT HET BESTAND TOE
                 data.doors.forEach(d => addDoor(d));
             };
             reader.readAsText(event.target.files[0]);
@@ -311,7 +275,6 @@
 
         window.onload = () => { 
             document.getElementById('currentDate').valueAsDate = new Date(); 
-            document.querySelectorAll('.autoclear').forEach(el => setupAutoClear(el));
             addDoor(); 
             lucide.createIcons(); 
         };
