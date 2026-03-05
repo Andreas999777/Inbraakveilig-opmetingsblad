@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inbraakveilig Opmetingsformulier</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #fef2f2; margin: 0; padding: 0; }
+        .card { background: white; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid #fca5a5; }
+        .door-section { border-left: 8px solid #dc2626; margin-bottom: 1rem; }
+        
+        .action-button { 
+            display: flex !important; align-items: center !important; justify-content: center !important; 
+            height: 48px !important; min-width: 150px; padding: 0 20px !important; 
+            border-radius: 10px; font-weight: 800; transition: all 0.2s; font-size: 14px;
+        }
+
+        .input-field { width: 100%; padding: 10px; border: 1px solid #fca5a5; border-radius: 6px; outline: none; height: 42px; font-size: 14px; }
+        .textarea-field { width: 100%; padding: 10px; border: 1px solid #fca5a5; border-radius: 6px; outline: none; min-height: 42px; height: 42px; resize: none; font-size: 14px; }
+        
+        .collapsed .door-content { display: none; }
+        
+        .no-print { display: block; }
+        @media print { .no-print { display: none !important; } }
+        
+        /* Preview styling op het scherm */
+        .photo-preview-item { display: inline-block; margin: 10px; position: relative; }
+        .photo-preview-img { width: 120px; height: 120px; object-fit: cover; border: 1px solid #fca5a5; border-radius: 4px; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div id="main-container" class="max-w-6xl mx-auto">
+        <h1 class="text-3xl font-extrabold text-red-700 uppercase italic mb-6 tracking-tighter">Opmetingsformulier Inbraakveilig</h1>
+        
+        <div id="main-actions" class="no-print mb-10 flex flex-wrap gap-3 p-4 bg-white rounded-xl shadow-md border border-red-100">
+            <button onclick="saveToFile()" class="action-button bg-[#1e293b] text-white hover:bg-black">Exporteer Data</button>
+            <label class="action-button bg-[#1e293b] text-white cursor-pointer hover:bg-black">
+                Importeer Data <input type="file" class="hidden" onchange="loadFromFile(event)">
+            </label>
+            <div class="w-px h-10 bg-red-100 mx-1"></div>
+            <button onclick="generateProfessionalPDF()" class="action-button bg-[#dc2626] text-white hover:bg-red-700">Genereer PDF</button>
+            <button onclick="exportToWord()" class="action-button bg-[#2563eb] text-white hover:bg-blue-700">Genereer Word</button>
+        </div>
+
+        <div class="card p-6 mb-8 grid grid-cols-1 md:grid-cols-3 gap-6 border-t-4 border-t-red-600">
+            <div><label class="block text-[10px] font-bold text-red-600 uppercase mb-1">Klant</label><input type="text" id="klantNaam" class="input-field autoclear" value="..."></div>
+            <div><label class="block text-[10px] font-bold text-red-600 uppercase mb-1">Project</label><input type="text" id="projectNaam" class="input-field autoclear" value="..."></div>
+            <div><label class="block text-[10px] font-bold text-red-600 uppercase mb-1">Verkoper</label><input type="text" id="verkoperNaam" class="input-field autoclear" value="..."></div>
+            <div class="md:col-span-2"><label class="block text-[10px] font-bold text-red-600 uppercase mb-1">Adres</label><input type="text" id="projectAdres" class="input-field autoclear" value="..."></div>
+            <div><label class="block text-[10px] font-bold text-red-600 uppercase mb-1">Datum</label><input type="date" id="currentDate" class="input-field"></div>
+        </div>
+
+        <div id="doors-container"></div>
+
+        <button id="add-door-btn" onclick="addDoor()" class="no-print w-full py-4 border-2 border-dashed border-red-400 rounded-xl text-red-600 font-bold hover:bg-red-100 transition flex items-center justify-center gap-2 mb-20 shadow-sm">
+            <i data-lucide="plus-circle"></i> Nieuwe deur toevoegen
+        </button>
+    </div>
+
+    <div id="pdf-export-temp" style="display:none;"></div>
+
+    <script>
+        const artikelen = [
+            {n:"74", d:"RST00U - Levering ontsluiter fail safe"}, {n:"75", d:"ST00US - Levering ontsluiter fail secure"},
+            {n:"76", d:"P.a.i. elektrische ontsluiter"}, {n:"77", d:"32LP - Levering RVS sluitplaat 32LP"},
+            {n:"78", d:"19LP - Levering RVS sluitplaat zonder opening"}, {n:"79", d:"P.a.i. sluitplaat"},
+            {n:"80", d:"TL0152SS - Levering blindrozet"}, {n:"81", d:"P.a.i. blindrozet plaatsing"},
+            {n:"82", d:"ML420 - Levering motorslot beperkte inbouwdiepte"}, {n:"83", d:"ML820 - Levering motorslot uitlijnende correctie"},
+            {n:"84", d:"MB420 - Levering opbouwmodule"}, {n:"85", d:"P.a.i. inbouwen van motorslot deurstijl"},
+            {n:"86", d:"P.a.i. opbouwen motorslot met opbouwmodule"}, {n:"87", d:"EL432 - Levering motorslot 1-punt - enkelzijdig"},
+            {n:"88", d:"EL518 - Levering motorslot 1-punt - dubbelzijdig"}, {n:"89", d:"P.a.i. motorslot 1-punt deurblad"},
+            {n:"90", d:"MP520/GU - Levering motorslot 3-punt"}, {n:"91", d:"P.a.i. motorslot 3-punt deurblad"},
+            {n:"92", d:"MODULEC-SA-E - Levering slotvanger voor opbouw"}, {n:"93", d:"P.a.i. elektrische slotvanger opbouw"},
+            {n:"94", d:"LEKQ U4 - Levering elektrisch slot opbouw"}, {n:"95", d:"LIKQ U2 - P.a.i. elektrisch slot opbouw"},
+            {n:"96", d:"17SSMDT - Levering deurmagneet"}, {n:"97", d:"17DSMDT - Levering deurmagneet dubbel"},
+            {n:"98", d:"17WPM - Levering deurmagneet roestvrij waterdicht"}, {n:"99", d:"17ZLC - Levering beugels of profielen"},
+            {n:"100", d:"P.a.i. deurmagneet"}, {n:"101", d:"17SGMDT - Levering magneetstrip"},
+            {n:"102", d:"17DGMDT - Levering magneetstrip"}, {n:"103", d:"P.a.i. magneetstrip"},
+            {n:"104", d:"DLF29W - Levering kabeldoorvoer inbouw"}, {n:"105", d:"P.a.i. kabeldoorvoer inbouw"},
+            {n:"106", d:"DLS50W - Levering kabeldoorvoer opbouw"}, {n:"107", d:"P.a.i. kabeldoorvoer opbouw"},
+            {n:"108", d:"TL3106SS - Levering gewone deurkruk"}, {n:"109", d:"TL0401SS - Levering vaste deurkruk"},
+            {n:"110", d:"P.a.i. deurkruk"}, {n:"111", d:"B-2116 / B-1916 - Levering anti-paniekslot"},
+            {n:"112", d:"P.a.i. anti-paniekslot"}, {n:"113", d:"B-7400 - Levering paniekbaar"},
+            {n:"114", d:"P.a.i. paniekbaar"}, {n:"115", d:"TS91 - Levering deursluiter lichte deur"},
+            {n:"116", d:"TS93 EN5 - Levering deursluiter zware deur"}, {n:"117", d:"TS91+vastzetarm - Levering deursluiter open stand"},
+            {n:"118", d:"TS93 EN5+vastzetarm - Levering deursluiter open stand"}, {n:"119", d:"P.a.i. deursluiter"},
+            {n:"120", d:"VERTICLOSE-2 - Levering poortsluiter"}, {n:"121", d:"P.a.i. poortsluiter"},
+            {n:"180", d:"Mul-T-Lock sleutel"}, {n:"181", d:"Mul-T-Lock cilinder"},
+            {n:"182", d:"Cilinder draaiknop"}, {n:"183", d:"P.a.i. cilinder draaiknop"},
+            {n:"184", d:"Hevelslot"}, {n:"185", d:"P.a.i. hevelslot"}
+        ];
+
+        let doorCount = 0;
+
+        function setupAutoClear(input) {
+            input.addEventListener('focus', function() {
+                if (this.value === '...') this.value = '';
+            });
+            input.addEventListener('blur', function() {
+                if (this.value.trim() === '') {
+                    this.value = '...';
+                    if (this.classList.contains('door-type')) updatePreview(this);
+                }
+            });
+        }
+
+        function addDoor(data = null) {
+            doorCount++;
+            const container = document.getElementById('doors-container');
+            const section = document.createElement('div');
+            section.className = "card door-section overflow-hidden mb-4";
+            
+            section.innerHTML = `
+                <div class="bg-red-50 p-4 flex justify-between items-center cursor-pointer no-print border-b border-red-100 hover:bg-red-100 transition" onclick="this.parentElement.classList.toggle('collapsed')">
+                    <div class="flex items-center gap-3">
+                        <span class="bg-red-600 text-white w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold">${doorCount}</span>
+                        <span class="font-bold text-red-800 uppercase text-sm">Deur: <span class="door-title-preview text-slate-500 italic">...</span></span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="text-[10px] font-bold text-red-500 uppercase tracking-widest flex items-center gap-1 bg-white px-2 py-1 rounded border border-red-200 shadow-sm"><i data-lucide="mouse-pointer-2" class="w-3 h-3"></i> Klap open/toe</span>
+                        <button onclick="event.stopPropagation(); if(confirm('Verwijderen?')){this.closest('.door-section').remove();}" class="bg-red-600 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold">VERWIJDER</button>
+                    </div>
+                </div>
+                <div class="door-content p-6">
+                    <div class="grid grid-cols-2 gap-4 mb-6 bg-slate-50 p-4 rounded-lg">
+                        <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Plaats</label><input type="text" class="input-field door-location autoclear" value="..."></div>
+                        <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Deurtype</label><input type="text" class="input-field door-type autoclear" oninput="updatePreview(this)" value="..."></div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 mb-6">
+                        ${artikelen.map(i => `<div class="flex items-center gap-2 py-1 border-b border-red-50 text-[11px]">
+                            <input type="checkbox" class="door-item-check w-4 h-4 accent-red-600" data-n="${i.n}" data-desc="${i.d}"> ${i.n} - ${i.d}
+                        </div>`).join('')}
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-red-100">
+                        <div><label class="text-[10px] font-bold text-red-600 uppercase mb-1">Geschatte werkuren</label><input type="text" class="input-field door-hours autoclear" value="..."></div>
+                        <div><label class="text-[10px] font-bold text-red-600 uppercase mb-1">Opmerkingen</label><textarea class="textarea-field door-notes autoclear">...</textarea></div>
+                    </div>
+                    <div class="no-print bg-red-50 p-4 rounded-lg mt-6 border border-red-100">
+                        <label class="block text-[10px] font-bold text-red-700 mb-2 uppercase">Foto's toevoegen</label>
+                        <input type="file" multiple accept="image/*" onchange="handlePhotos(event, this)">
+                    </div>
+                    <div class="photo-area mt-4 flex flex-wrap"></div>
+                </div>
+            `;
+            container.appendChild(section);
+            section.querySelectorAll('.autoclear').forEach(input => setupAutoClear(input));
+            if(data) fillDoorData(section, data);
+            lucide.createIcons();
+        }
+
+        function updatePreview(input) {
+            const preview = input.closest('.door-section').querySelector('.door-title-preview');
+            preview.innerText = input.value || "...";
+        }
+
+        function handlePhotos(event, input) {
+            const area = input.closest('.door-content').querySelector('.photo-area');
+            Array.from(event.target.files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const div = document.createElement('div');
+                    div.className = "photo-preview-item";
+                    div.innerHTML = `
+                        <img src="${e.target.result}" class="photo-preview-img" data-full="${e.target.result}">
+                        <button onclick="this.parentElement.remove()" class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-5 h-5 text-xs">×</button>
+                    `;
+                    area.appendChild(div);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        async function generateProfessionalPDF() {
+            const temp = document.getElementById('pdf-export-temp');
+            const getVal = (id) => {
+                const el = document.getElementById(id);
+                return (!el || el.value === '...') ? '' : el.value;
+            };
+
+            // DATUM FORMATTERING: Maand-Dag-Jaar
+            const rawDate = document.getElementById('currentDate').value;
+            let formattedDate = rawDate;
+            if(rawDate) {
+                const [year, month, day] = rawDate.split('-');
+                formattedDate = `${month}-${day}-${year}`;
+            }
+
+            let html = `
+                <div style="font-family: Arial, sans-serif; color: black; line-height: 1.4; padding: 5px;">
+                    <div style="border: 2px solid #dc2626; margin-bottom: 30px; background: #fff;">
+                        <div style="background: #dc2626; color: white; padding: 10px 15px; font-weight: bold; text-transform: uppercase; font-size: 16px;">
+                            OPMETING INBRAAKVEILIG - PROJECTOVERZICHT
+                        </div>
+                        <div style="padding: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 13px;">
+                            <div><span style="color: #999; text-transform: uppercase; font-size: 9px; display: block;">Klant</span><strong>${getVal('klantNaam') || '/'}</strong></div>
+                            <div><span style="color: #999; text-transform: uppercase; font-size: 9px; display: block;">Verkoper</span><strong>${getVal('verkoperNaam') || '/'}</strong></div>
+                            <div><span style="color: #999; text-transform: uppercase; font-size: 9px; display: block;">Project</span><strong>${getVal('projectNaam') || '/'}</strong></div>
+                            <div><span style="color: #999; text-transform: uppercase; font-size: 9px; display: block;">Datum</span><strong>${formattedDate || '/'}</strong></div>
+                            <div style="grid-column: span 2; border-top: 1px solid #f5f5f5; padding-top: 10px;"><span style="color: #999; text-transform: uppercase; font-size: 9px; display: block;">Adres</span><strong>${getVal('projectAdres') || '/'}</strong></div>
+                        </div>
+                    </div>
+            `;
+
+            const doorSections = document.querySelectorAll('.door-section');
+            doorSections.forEach((s, index) => {
+                let loc = s.querySelector('.door-location').value;
+                let type = s.querySelector('.door-type').value;
+                let hours = s.querySelector('.door-hours').value;
+                let notes = s.querySelector('.door-notes').value;
+                const checked = Array.from(s.querySelectorAll('.door-item-check:checked'));
+                const photos = Array.from(s.querySelectorAll('.photo-preview-img'));
+
+                loc = (loc === '...') ? '' : loc;
+                type = (type === '...') ? '' : type;
+                hours = (hours === '...') ? '' : hours;
+                notes = (notes === '...') ? '' : notes;
+
+                const pageBreak = (index === 0) ? '' : 'page-break-before: always;';
+
+                html += `
+                    <div style="${pageBreak} padding: 5px; margin-top: 5px;">
+                        <div style="background: #444; color: white; padding: 8px 15px; margin-bottom: 15px;">
+                            <span style="font-size: 16px; font-weight: bold; text-transform: uppercase;">DEUR ${index + 1}: ${type} ${loc ? ' | ' + loc : ''}</span>
+                        </div>
+
+                        <div style="display: flex; gap: 20px;">
+                            <div style="width: 35%; flex-shrink: 0;">
+                                <p style="font-weight: bold; font-size: 11px; margin-bottom: 5px; color: #dc2626; border-bottom: 1px solid #dc2626;">GEKOZEN ARTIKELEN</p>
+                                <ul style="list-style: none; padding-left: 0; font-size: 10px; margin: 0;">
+                `;
+
+                if(checked.length === 0) {
+                    html += `<li><i>Geen artikelen geselecteerd</i></li>`;
+                } else {
+                    checked.forEach(c => {
+                        html += `<li style="margin-bottom: 3px; border-bottom: 0.5px solid #f0f0f0; padding-bottom: 2px;">• ${c.dataset.n} - ${c.dataset.desc}</li>`;
+                    });
+                }
+
+                html += `
+                                </ul>
+                                <div style="margin-top: 20px; font-size: 10px; background: #fef2f2; padding: 10px; border: 1px solid #fca5a5; border-radius: 4px;">
+                                    <p style="margin-bottom: 5px;"><strong>Werkuren:</strong> ${hours || '/'}</p>
+                                    <p><strong>Opmerkingen:</strong><br><span style="white-space: pre-wrap;">${notes || '/'}</span></p>
+                                </div>
+                            </div>
+
+                            <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                `;
+
+                if(photos.length > 0) {
+                    photos.forEach(img => {
+                        html += `
+                            <div style="text-align: center; margin-bottom: 10px;">
+                                <img src="${img.dataset.full}" style="width: 150mm; height: 145mm; object-fit: contain; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                        `;
+                    });
+                } else {
+                    html += `<div style="width: 150mm; height: 145mm; border: 2px dashed #ddd; display: flex; align-items: center; justify-content: center; color: #ccc;">Geen foto</div>`;
+                }
+
+                html += `
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+
+            temp.innerHTML = html;
+            temp.style.display = 'block';
+
+            const opt = {
+                margin: [10, 10],
+                filename: `Opmeting_${getVal('klantNaam') || 'Inbraakveilig'}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: ['css', 'legacy'] }
+            };
+
+            await html2pdf().set(opt).from(temp).save();
+            temp.style.display = 'none';
+        }
+
+        function exportToWord() {
+            const klant = document.getElementById('klantNaam').value;
+            let content = `<h1>Opmeting Inbraakveilig - ${klant !== '...' ? klant : ''}</h1>`;
+            const blob = new Blob(['\ufeff', content], { type: 'application/msword' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = `Opmeting_${klant}.doc`; a.click();
+        }
+
+        function saveToFile() {
+            const data = {
+                header: { klant: document.getElementById('klantNaam').value, project: document.getElementById('projectNaam').value, verkoper: document.getElementById('verkoperNaam').value, adres: document.getElementById('projectAdres').value, datum: document.getElementById('currentDate').value },
+                doors: []
+            };
+            document.querySelectorAll('.door-section').forEach(s => {
+                data.doors.push({ 
+                    location: s.querySelector('.door-location').value, 
+                    type: s.querySelector('.door-type').value, 
+                    hours: s.querySelector('.door-hours').value, 
+                    notes: s.querySelector('.door-notes').value, 
+                    items: Array.from(s.querySelectorAll('.door-item-check:checked')).map(c => c.dataset.n) 
+                });
+            });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(new Blob([JSON.stringify(data)], {type: 'application/json'}));
+            a.download = `Data_Inbraakveilig.json`; a.click();
+        }
+
+        function loadFromFile(event) {
+            const reader = new FileReader();
+            reader.onload = e => {
+                const data = JSON.parse(e.target.result);
+                document.getElementById('klantNaam').value = data.header.klant;
+                document.getElementById('projectNaam').value = data.header.project;
+                document.getElementById('verkoperNaam').value = data.header.verkoper;
+                document.getElementById('projectAdres').value = data.header.adres;
+                document.getElementById('currentDate').value = data.header.datum;
+                document.getElementById('doors-container').innerHTML = '';
+                data.doors.forEach(d => addDoor(d));
+            };
+            reader.readAsText(event.target.files[0]);
+        }
+
+        function fillDoorData(s, d) {
+            s.querySelector('.door-location').value = d.location || '...';
+            s.querySelector('.door-type').value = d.type || '...';
+            s.querySelector('.door-hours').value = d.hours || '...';
+            s.querySelector('.door-notes').value = d.notes || '...';
+            if(d.items) d.items.forEach(n => { const c = s.querySelector(`.door-item-check[data-n="${n}"]`); if(c) c.checked = true; });
+            updatePreview(s.querySelector('.door-type'));
+        }
+
+        window.onload = () => { 
+            document.getElementById('currentDate').valueAsDate = new Date(); 
+            document.querySelectorAll('.autoclear').forEach(el => setupAutoClear(el));
+            addDoor(); 
+            lucide.createIcons(); 
+        };
+    </script>
+</body>
+</html>
