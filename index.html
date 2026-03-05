@@ -141,7 +141,10 @@
                 </div>
             `;
             container.appendChild(section);
+            
+            // Koppel autoclear aan de nieuwe velden
             section.querySelectorAll('.autoclear').forEach(input => setupAutoClear(input));
+            
             if(data) fillDoorData(section, data);
             reindexDoors();
             lucide.createIcons();
@@ -214,13 +217,20 @@
             const temp = document.getElementById('pdf-export-temp');
             temp.innerHTML = generateHTMLContent();
             temp.style.display = 'block';
-            const opt = { margin: 10, filename: `Opmeting_${document.getElementById('klantNaam').value}.pdf`, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
+            const opt = { 
+                margin: 10, 
+                filename: `Opmeting_${document.getElementById('klantNaam').value}.pdf`, 
+                html2canvas: { scale: 2, useCORS: true }, 
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
+            };
             await html2pdf().set(opt).from(temp).save();
             temp.style.display = 'none';
         }
 
         function exportToWord() {
-            const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'></head><body>";
+            const header = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head><meta charset='utf-8'><style>body{font-family:Arial;}</style></head><body>`;
             const footer = "</body></html>";
             const blob = new Blob([header + generateHTMLContent() + footer], { type: 'application/msword' });
             const link = document.createElement("a");
@@ -231,7 +241,13 @@
 
         function saveToFile() {
             const data = {
-                header: { klant: document.getElementById('klantNaam').value, project: document.getElementById('projectNaam').value, verkoper: document.getElementById('verkoperNaam').value, adres: document.getElementById('projectAdres').value, datum: document.getElementById('currentDate').value },
+                header: { 
+                    klant: document.getElementById('klantNaam').value, 
+                    project: document.getElementById('projectNaam').value, 
+                    verkoper: document.getElementById('verkoperNaam').value, 
+                    adres: document.getElementById('projectAdres').value, 
+                    datum: document.getElementById('currentDate').value 
+                },
                 doors: Array.from(document.querySelectorAll('.door-section')).map(s => ({
                     location: s.querySelector('.door-location').value,
                     type: s.querySelector('.door-type').value,
@@ -255,10 +271,7 @@
                 document.getElementById('projectAdres').value = data.header.adres;
                 document.getElementById('currentDate').value = data.header.datum;
                 
-                // WIS ALLE BESTAANDE DEUREN EERST
                 document.getElementById('doors-container').innerHTML = '';
-                
-                // VOEG ALLE DEUREN UIT HET BESTAND TOE
                 data.doors.forEach(d => addDoor(d));
             };
             reader.readAsText(event.target.files[0]);
@@ -269,12 +282,17 @@
             s.querySelector('.door-type').value = d.type || '...';
             s.querySelector('.door-hours').value = d.hours || '...';
             s.querySelector('.door-notes').value = d.notes || '...';
-            if(d.items) d.items.forEach(n => { const c = s.querySelector(`.door-item-check[data-n="${n}"]`); if(c) c.checked = true; });
+            if(d.items) d.items.forEach(n => { 
+                const c = s.querySelector(`.door-item-check[data-n="${n}"]`); 
+                if(c) c.checked = true; 
+            });
             updatePreview(s.querySelector('.door-type'));
         }
 
         window.onload = () => { 
             document.getElementById('currentDate').valueAsDate = new Date(); 
+            // Activeer autoclear voor de header velden
+            document.querySelectorAll('.autoclear').forEach(input => setupAutoClear(input));
             addDoor(); 
             lucide.createIcons(); 
         };
