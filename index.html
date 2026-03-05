@@ -102,11 +102,18 @@
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1 mb-4 border-y border-red-50 py-4">
                         ${artikelen.map(a => `<label class="flex items-center gap-2 text-[11px] hover:bg-red-50 rounded transition-colors p-1"><input type="checkbox" class="art-check" data-n="${a.n}" data-d="${a.d}"> <strong>${a.n}</strong> - ${a.d}</label>`).join('')}
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div><label class="block text-[10px] font-bold text-red-600 uppercase mb-1 tracking-wider">Geschatte werkuren</label><input type="text" class="input-field door-hours" value="..."></div>
-                        <div><label class="block text-[10px] font-bold text-red-600 uppercase mb-1 tracking-wider">Opmerkingen</label><input type="text" class="input-field door-notes" value="..."></div>
-                    </div>
+                   <div class="no-print mt-6 bg-red-50 p-4 rounded-lg border border-dashed border-red-200">
+    <label class="block text-[10px] font-bold text-red-700 uppercase mb-2 italic">Foto's van de situatie:</label>
+    <div class="flex flex-wrap gap-2">
+        <label class="action-button bg-slate-800 text-white hover:bg-black cursor-pointer text-[11px]">
+            📂 Kies Bestanden <input type="file" multiple accept="image/*" class="hidden" onchange="handleImgs(event, this)">
+        </label>
+        <label class="action-button bg-red-600 text-white hover:bg-red-700 cursor-pointer text-[11px]">
+            📸 Open Camera <input type="file" accept="image/*" capture="environment" class="hidden" onchange="handleImgs(event, this)">
+        </label>
+    </div>
+    <div class="photo-area flex flex-wrap mt-3"></div>
+</div>
                     <div class="no-print mt-6 bg-red-50 p-4 rounded-lg border border-dashed border-red-200">
                         <label class="block text-[10px] font-bold text-red-700 uppercase mb-2 italic">Foto's van de situatie:</label>
                         <input type="file" multiple accept="image/*" onchange="handleImgs(event, this)">
