@@ -27,7 +27,6 @@
         .no-print { display: block; }
         @media print { .no-print { display: none !important; } }
         
-        /* Preview styling op het scherm */
         .photo-preview-item { display: inline-block; margin: 10px; position: relative; }
         .photo-preview-img { width: 120px; height: 120px; object-fit: cover; border: 1px solid #fca5a5; border-radius: 4px; }
     </style>
@@ -65,6 +64,7 @@
     <div id="pdf-export-temp" style="display:none;"></div>
 
     <script>
+        // Artikelen lijst ongewijzigd
         const artikelen = [
             {n:"74", d:"RST00U - Levering ontsluiter fail safe"}, {n:"75", d:"ST00US - Levering ontsluiter fail secure"},
             {n:"76", d:"P.a.i. elektrische ontsluiter"}, {n:"77", d:"32LP - Levering RVS sluitplaat 32LP"},
@@ -98,9 +98,7 @@
         let doorCount = 0;
 
         function setupAutoClear(input) {
-            input.addEventListener('focus', function() {
-                if (this.value === '...') this.value = '';
-            });
+            input.addEventListener('focus', function() { if (this.value === '...') this.value = ''; });
             input.addEventListener('blur', function() {
                 if (this.value.trim() === '') {
                     this.value = '...';
@@ -114,7 +112,6 @@
             const container = document.getElementById('doors-container');
             const section = document.createElement('div');
             section.className = "card door-section overflow-hidden mb-4";
-            
             section.innerHTML = `
                 <div class="bg-red-50 p-4 flex justify-between items-center cursor-pointer no-print border-b border-red-100 hover:bg-red-100 transition" onclick="this.parentElement.classList.toggle('collapsed')">
                     <div class="flex items-center gap-3">
@@ -165,24 +162,20 @@
                 reader.onload = e => {
                     const div = document.createElement('div');
                     div.className = "photo-preview-item";
-                    div.innerHTML = `
-                        <img src="${e.target.result}" class="photo-preview-img" data-full="${e.target.result}">
-                        <button onclick="this.parentElement.remove()" class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-5 h-5 text-xs">×</button>
-                    `;
+                    div.innerHTML = `<img src="${e.target.result}" class="photo-preview-img" data-full="${e.target.result}"><button onclick="this.parentElement.remove()" class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-5 h-5 text-xs">×</button>`;
                     area.appendChild(div);
                 };
                 reader.readAsDataURL(file);
             });
         }
 
-        async function generateProfessionalPDF() {
-            const temp = document.getElementById('pdf-export-temp');
+        // Hulpfunctie voor HTML Generatie (Gedeeld door PDF en Word)
+        function generateHTMLContent() {
             const getVal = (id) => {
                 const el = document.getElementById(id);
                 return (!el || el.value === '...') ? '' : el.value;
             };
 
-            // DATUM FORMATTERING: Maand-Dag-Jaar
             const rawDate = document.getElementById('currentDate').value;
             let formattedDate = rawDate;
             if(rawDate) {
@@ -190,24 +183,17 @@
                 formattedDate = `${month}-${day}-${year}`;
             }
 
-            let html = `
-                <div style="font-family: Arial, sans-serif; color: black; line-height: 1.4; padding: 5px;">
-                    <div style="border: 2px solid #dc2626; margin-bottom: 30px; background: #fff;">
-                        <div style="background: #dc2626; color: white; padding: 10px 15px; font-weight: bold; text-transform: uppercase; font-size: 16px;">
-                            OPMETING INBRAAKVEILIG - PROJECTOVERZICHT
-                        </div>
-                        <div style="padding: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 13px;">
-                            <div><span style="color: #999; text-transform: uppercase; font-size: 9px; display: block;">Klant</span><strong>${getVal('klantNaam') || '/'}</strong></div>
-                            <div><span style="color: #999; text-transform: uppercase; font-size: 9px; display: block;">Verkoper</span><strong>${getVal('verkoperNaam') || '/'}</strong></div>
-                            <div><span style="color: #999; text-transform: uppercase; font-size: 9px; display: block;">Project</span><strong>${getVal('projectNaam') || '/'}</strong></div>
-                            <div><span style="color: #999; text-transform: uppercase; font-size: 9px; display: block;">Datum</span><strong>${formattedDate || '/'}</strong></div>
-                            <div style="grid-column: span 2; border-top: 1px solid #f5f5f5; padding-top: 10px;"><span style="color: #999; text-transform: uppercase; font-size: 9px; display: block;">Adres</span><strong>${getVal('projectAdres') || '/'}</strong></div>
-                        </div>
-                    </div>
-            `;
+            let html = `<div style="font-family: Arial; padding: 10px;">
+                <div style="border: 2px solid #dc2626; margin-bottom: 20px;">
+                    <div style="background: #dc2626; color: white; padding: 10px; font-weight: bold; font-size: 16px;">OPMETING INBRAAKVEILIG - PROJECTOVERZICHT</div>
+                    <table style="width: 100%; padding: 10px; font-size: 12px;">
+                        <tr><td><strong>Klant:</strong> ${getVal('klantNaam')}</td><td><strong>Verkoper:</strong> ${getVal('verkoperNaam')}</td></tr>
+                        <tr><td><strong>Project:</strong> ${getVal('projectNaam')}</td><td><strong>Datum:</strong> ${formattedDate}</td></tr>
+                        <tr><td colspan="2"><strong>Adres:</strong> ${getVal('projectAdres')}</td></tr>
+                    </table>
+                </div>`;
 
-            const doorSections = document.querySelectorAll('.door-section');
-            doorSections.forEach((s, index) => {
+            document.querySelectorAll('.door-section').forEach((s, index) => {
                 let loc = s.querySelector('.door-location').value;
                 let type = s.querySelector('.door-type').value;
                 let hours = s.querySelector('.door-hours').value;
@@ -215,88 +201,69 @@
                 const checked = Array.from(s.querySelectorAll('.door-item-check:checked'));
                 const photos = Array.from(s.querySelectorAll('.photo-preview-img'));
 
-                loc = (loc === '...') ? '' : loc;
-                type = (type === '...') ? '' : type;
-                hours = (hours === '...') ? '' : hours;
-                notes = (notes === '...') ? '' : notes;
-
-                const pageBreak = (index === 0) ? '' : 'page-break-before: always;';
-
-                html += `
-                    <div style="${pageBreak} padding: 5px; margin-top: 5px;">
-                        <div style="background: #444; color: white; padding: 8px 15px; margin-bottom: 15px;">
-                            <span style="font-size: 16px; font-weight: bold; text-transform: uppercase;">DEUR ${index + 1}: ${type} ${loc ? ' | ' + loc : ''}</span>
-                        </div>
-
-                        <div style="display: flex; gap: 20px;">
-                            <div style="width: 35%; flex-shrink: 0;">
-                                <p style="font-weight: bold; font-size: 11px; margin-bottom: 5px; color: #dc2626; border-bottom: 1px solid #dc2626;">GEKOZEN ARTIKELEN</p>
-                                <ul style="list-style: none; padding-left: 0; font-size: 10px; margin: 0;">
-                `;
-
-                if(checked.length === 0) {
-                    html += `<li><i>Geen artikelen geselecteerd</i></li>`;
-                } else {
-                    checked.forEach(c => {
-                        html += `<li style="margin-bottom: 3px; border-bottom: 0.5px solid #f0f0f0; padding-bottom: 2px;">• ${c.dataset.n} - ${c.dataset.desc}</li>`;
-                    });
-                }
-
-                html += `
-                                </ul>
-                                <div style="margin-top: 20px; font-size: 10px; background: #fef2f2; padding: 10px; border: 1px solid #fca5a5; border-radius: 4px;">
-                                    <p style="margin-bottom: 5px;"><strong>Werkuren:</strong> ${hours || '/'}</p>
-                                    <p><strong>Opmerkingen:</strong><br><span style="white-space: pre-wrap;">${notes || '/'}</span></p>
-                                </div>
-                            </div>
-
-                            <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
-                `;
-
-                if(photos.length > 0) {
-                    photos.forEach(img => {
-                        html += `
-                            <div style="text-align: center; margin-bottom: 10px;">
-                                <img src="${img.dataset.full}" style="width: 150mm; height: 145mm; object-fit: contain; border: 1px solid #ddd; border-radius: 4px;">
-                            </div>
-                        `;
-                    });
-                } else {
-                    html += `<div style="width: 150mm; height: 145mm; border: 2px dashed #ddd; display: flex; align-items: center; justify-content: center; color: #ccc;">Geen foto</div>`;
-                }
-
-                html += `
-                            </div>
-                        </div>
-                    </div>
-                `;
+                html += `<div style="${index > 0 ? 'page-break-before: always;' : ''} margin-top: 20px;">
+                    <div style="background: #444; color: white; padding: 8px; font-weight: bold; font-size: 14px;">DEUR ${index + 1}: ${type} ${loc !== '...' ? ' | ' + loc : ''}</div>
+                    <table style="width: 100%; margin-top: 10px;">
+                        <tr>
+                            <td style="width: 40%; vertical-align: top; font-size: 10px;">
+                                <strong style="color: #dc2626;">ARTIKELEN:</strong><br>
+                                ${checked.length > 0 ? checked.map(c => `• ${c.dataset.n} - ${c.dataset.desc}<br>`).join('') : '<i>Geen</i>'}
+                                <br><br>
+                                <strong>Werkuren:</strong> ${hours !== '...' ? hours : '/'}<br>
+                                <strong>Opmerkingen:</strong><br>${notes !== '...' ? notes : '/'}
+                            </td>
+                            <td style="vertical-align: top; text-align: center;">
+                                ${photos.map(img => `<img src="${img.dataset.full}" style="width: 300px; margin-bottom: 10px; border: 1px solid #ddd;">`).join('')}
+                                ${photos.length === 0 ? '<i>Geen foto</i>' : ''}
+                            </td>
+                        </tr>
+                    </table>
+                </div>`;
             });
-
             html += `</div>`;
+            return html;
+        }
 
-            temp.innerHTML = html;
+        async function generateProfessionalPDF() {
+            const temp = document.getElementById('pdf-export-temp');
+            temp.innerHTML = generateHTMLContent();
             temp.style.display = 'block';
-
             const opt = {
                 margin: [10, 10],
-                filename: `Opmeting_${getVal('klantNaam') || 'Inbraakveilig'}.pdf`,
+                filename: `Opmeting_${document.getElementById('klantNaam').value}.pdf`,
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 2, useCORS: true },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
                 pagebreak: { mode: ['css', 'legacy'] }
             };
-
             await html2pdf().set(opt).from(temp).save();
             temp.style.display = 'none';
         }
 
+        // NIEUWE VOLLEDIGE WORD EXPORT FUNCTIE
         function exportToWord() {
-            const klant = document.getElementById('klantNaam').value;
-            let content = `<h1>Opmeting Inbraakveilig - ${klant !== '...' ? klant : ''}</h1>`;
-            const blob = new Blob(['\ufeff', content], { type: 'application/msword' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url; a.download = `Opmeting_${klant}.doc`; a.click();
+            const htmlHeader = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Export Word</title></head><body>";
+            const htmlFooter = "</body></html>";
+            const sourceHTML = htmlHeader + generateHTMLContent() + htmlFooter;
+            
+            const blob = new Blob(['\ufeff', sourceHTML], {
+                type: 'application/msword'
+            });
+            
+            const url = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
+            const fileName = `Opmeting_${document.getElementById('klantNaam').value || 'Inbraakveilig'}.doc`;
+            
+            const downloadLink = document.createElement("a");
+            document.body.appendChild(downloadLink);
+            
+            if(navigator.msSaveOrOpenBlob ){
+                navigator.msSaveOrOpenBlob(blob, fileName);
+            } else {
+                downloadLink.href = url;
+                downloadLink.download = fileName;
+                downloadLink.click();
+            }
+            document.body.removeChild(downloadLink);
         }
 
         function saveToFile() {
