@@ -102,21 +102,23 @@
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1 mb-4 border-y border-red-50 py-4">
                         ${artikelen.map(a => `<label class="flex items-center gap-2 text-[11px] hover:bg-red-50 rounded transition-colors p-1"><input type="checkbox" class="art-check" data-n="${a.n}" data-d="${a.d}"> <strong>${a.n}</strong> - ${a.d}</label>`).join('')}
-                   <div class="no-print mt-6 bg-red-50 p-4 rounded-lg border border-dashed border-red-200">
-    <label class="block text-[10px] font-bold text-red-700 uppercase mb-2 italic">Foto's van de situatie:</label>
-    <div class="flex flex-wrap gap-2">
-        <label class="action-button bg-slate-800 text-white hover:bg-black cursor-pointer text-[11px]">
-            📂 Kies Bestanden <input type="file" multiple accept="image/*" class="hidden" onchange="handleImgs(event, this)">
-        </label>
-        <label class="action-button bg-red-600 text-white hover:bg-red-700 cursor-pointer text-[11px]">
-            📸 Open Camera <input type="file" accept="image/*" capture="environment" class="hidden" onchange="handleImgs(event, this)">
-        </label>
-    </div>
-    <div class="photo-area flex flex-wrap mt-3"></div>
-</div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div><label class="block text-[10px] font-bold text-red-600 uppercase mb-1 tracking-wider">Geschatte werkuren</label><input type="text" class="input-field door-hours" value="..."></div>
+                        <div><label class="block text-[10px] font-bold text-red-600 uppercase mb-1 tracking-wider">Opmerkingen</label><input type="text" class="input-field door-notes" value="..."></div>
+                    </div>
+
                     <div class="no-print mt-6 bg-red-50 p-4 rounded-lg border border-dashed border-red-200">
                         <label class="block text-[10px] font-bold text-red-700 uppercase mb-2 italic">Foto's van de situatie:</label>
-                        <input type="file" multiple accept="image/*" onchange="handleImgs(event, this)">
+                        <div class="flex flex-wrap gap-2">
+                            <label class="action-button bg-slate-800 text-white hover:bg-black cursor-pointer text-[11px]">
+                                📂 Kies Bestanden <input type="file" multiple accept="image/*" class="hidden" onchange="handleImgs(event, this)">
+                            </label>
+                            <label class="action-button bg-red-600 text-white hover:bg-red-700 cursor-pointer text-[11px]">
+                                📸 Open Camera <input type="file" accept="image/*" capture="environment" class="hidden" onchange="handleImgs(event, this)">
+                            </label>
+                        </div>
                         <div class="photo-area flex flex-wrap mt-3"></div>
                     </div>
                 </div>
@@ -209,13 +211,11 @@
             document.querySelectorAll('.door-section').forEach((s, i) => {
                 const checkedItems = Array.from(s.querySelectorAll('.art-check:checked'));
                 const photos = Array.from(s.querySelectorAll('.photo-preview-img'));
-                
-                // Bepaal de grootte van de foto's op basis van de hoeveelheid tekst
-                // Als er minder dan 4 artikelen zijn, maken we de foto's groter.
                 const photoWidth = checkedItems.length < 4 ? '90%' : '45%';
                 const photoMaxHeight = checkedItems.length < 4 ? '600px' : '300px';
 
-                content += `<div style="border:1px solid #ccc; margin-bottom:20px; page-break-after:always; border-radius:8px; overflow:hidden; min-height:95vh; display:flex; flex-direction:column;">
+                // Verwijder page-break-after en min-height om wit blad te voorkomen
+                content += `<div style="border:1px solid #ccc; margin-bottom:20px; border-radius:8px; overflow:hidden; display:flex; flex-direction:column;">
                     <div style="background:#f8f8f8; padding:10px; border-bottom:2px solid #dc2626; font-weight:bold; color:#dc2626;">DEUR ${i+1}: ${s.querySelector('.door-loc').value} (${s.querySelector('.door-type').value})</div>
                     <div style="padding:15px; flex-grow:0;">
                         <p><strong>Geselecteerde Artikelen:</strong></p>
