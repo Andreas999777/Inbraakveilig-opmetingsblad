@@ -9,50 +9,43 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #fef2f2; margin: 0; padding: 0; }
-        .card { background: white; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid #fca5a5; }
-        .door-section { border-left: 8px solid #dc2626; margin-bottom: 1rem; }
-        .action-button { display: flex !important; align-items: center !important; justify-content: center !important; height: 48px !important; min-width: 150px; padding: 0 20px !important; border-radius: 10px; font-weight: 800; transition: all 0.2s; font-size: 14px; }
-        .input-field { width: 100%; padding: 10px; border: 1px solid #fca5a5; border-radius: 6px; outline: none; height: 42px; font-size: 14px; }
-        .textarea-field { width: 100%; padding: 10px; border: 1px solid #fca5a5; border-radius: 6px; outline: none; min-height: 42px; height: 42px; resize: none; font-size: 14px; }
+        body { font-family: 'Inter', sans-serif; background-color: #fef2f2; padding: 20px; }
+        .card { background: white; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid #fca5a5; margin-bottom: 1.5rem; }
+        .door-section { border-left: 8px solid #dc2626; }
+        .action-button { display: inline-flex; align-items: center; justify-content: center; height: 44px; padding: 0 20px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: all 0.2s; font-size: 13px; }
+        .input-field { width: 100%; padding: 10px; border: 1px solid #fca5a5; border-radius: 6px; font-size: 14px; }
+        .photo-preview-img { width: 120px; height: 120px; object-fit: cover; border: 1px solid #dc2626; border-radius: 4px; margin: 5px; }
         .collapsed .door-content { display: none; }
-        .no-print { display: block; }
         @media print { .no-print { display: none !important; } }
-        .photo-preview-item { display: inline-block; margin: 10px; position: relative; }
-        .photo-preview-img { width: 120px; height: 120px; object-fit: cover; border: 1px solid #fca5a5; border-radius: 4px; }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body>
 
-    <div id="main-container" class="max-w-6xl mx-auto">
-        <h1 class="text-3xl font-extrabold text-red-700 uppercase italic mb-6 tracking-tighter">Opmetingsformulier Inbraakveilig</h1>
-        
-        <div id="main-actions" class="no-print mb-10 flex flex-wrap gap-3 p-4 bg-white rounded-xl shadow-md border border-red-100">
-            <button onclick="saveToFile()" class="action-button bg-[#1e293b] text-white hover:bg-black">Exporteer Data</button>
-            <label class="action-button bg-[#1e293b] text-white cursor-pointer hover:bg-black">
-                Importeer Data <input type="file" class="hidden" onchange="loadFromFile(event)">
-            </label>
-            <div class="w-px h-10 bg-red-100 mx-1"></div>
-            <button onclick="generateProfessionalPDF()" class="action-button bg-[#dc2626] text-white hover:bg-red-700">Genereer PDF</button>
-            <button onclick="exportToWord()" class="action-button bg-[#2563eb] text-white hover:bg-blue-700">Genereer Word</button>
+    <div class="max-w-5xl mx-auto">
+        <div class="no-print mb-8 p-4 bg-white rounded-xl shadow-lg border border-red-200 flex flex-wrap gap-3 items-center">
+            <h2 class="text-red-700 font-bold mr-4 uppercase tracking-wider">Inbraakveilig</h2>
+            <button onclick="saveToFile()" class="action-button bg-slate-800 text-white hover:bg-black">💾 Data Opslaan</button>
+            <label class="action-button bg-slate-800 text-white hover:bg-black cursor-pointer">📂 Data Laden <input type="file" class="hidden" onchange="loadFromFile(event)"></label>
+            <button onclick="generateProfessionalPDF()" class="action-button bg-red-600 text-white hover:bg-red-700">📄 Genereer PDF</button>
+            <a href="https://www.adobe.com/be_nl/acrobat/online/pdf-to-word.html" target="_blank" class="action-button bg-blue-600 text-white hover:bg-blue-700">🔄 Omzetten Word</a>
         </div>
 
-        <div class="card p-6 mb-8 grid grid-cols-1 md:grid-cols-3 gap-6 border-t-4 border-t-red-600">
-            <div><label class="block text-[10px] font-bold text-red-600 uppercase mb-1">Klant</label><input type="text" id="klantNaam" class="input-field autoclear" value="..."></div>
-            <div><label class="block text-[10px] font-bold text-red-600 uppercase mb-1">Project</label><input type="text" id="projectNaam" class="input-field autoclear" value="..."></div>
-            <div><label class="block text-[10px] font-bold text-red-600 uppercase mb-1">Verkoper</label><input type="text" id="verkoperNaam" class="input-field autoclear" value="..."></div>
-            <div class="md:col-span-2"><label class="block text-[10px] font-bold text-red-600 uppercase mb-1">Adres</label><input type="text" id="projectAdres" class="input-field autoclear" value="..."></div>
-            <div><label class="block text-[10px] font-bold text-red-600 uppercase mb-1">Datum</label><input type="date" id="currentDate" class="input-field"></div>
+        <div class="card p-6 border-t-4 border-red-600">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div><label class="block text-[10px] font-bold text-red-600 uppercase mb-1 tracking-wider">Klant</label><input type="text" id="klantNaam" class="input-field" value="..."></div>
+                <div><label class="block text-[10px] font-bold text-red-600 uppercase mb-1 tracking-wider">Project</label><input type="text" id="projectNaam" class="input-field" value="..."></div>
+                <div><label class="block text-[10px] font-bold text-red-600 uppercase mb-1 tracking-wider">Verkoper</label><input type="text" id="verkoperNaam" class="input-field" value="..."></div>
+                <div class="md:col-span-2"><label class="block text-[10px] font-bold text-red-600 uppercase mb-1 tracking-wider">Adres Project</label><input type="text" id="projectAdres" class="input-field" value="..."></div>
+                <div><label class="block text-[10px] font-bold text-red-600 uppercase mb-1 tracking-wider">Datum (MM-DD-YYYY)</label><input type="text" id="displayDate" class="input-field"></div>
+            </div>
         </div>
 
         <div id="doors-container"></div>
 
-        <button onclick="addDoor()" class="no-print w-full py-4 border-2 border-dashed border-red-400 rounded-xl text-red-600 font-bold hover:bg-red-100 transition flex items-center justify-center gap-2 mb-20 shadow-sm">
-            <i data-lucide="plus-circle"></i> Nieuwe deur toevoegen
+        <button onclick="addDoor()" class="no-print w-full py-4 border-2 border-dashed border-red-400 rounded-xl text-red-600 font-bold hover:bg-red-50 transition mb-20">
+            + Nieuwe deur toevoegen
         </button>
     </div>
-
-    <div id="pdf-export-temp" style="display:none;"></div>
 
     <script>
         const artikelen = [
@@ -60,208 +53,127 @@
             {n:"76", d:"P.a.i. elektrische ontsluiter"}, {n:"77", d:"32LP - Levering RVS sluitplaat 32LP"},
             {n:"78", d:"19LP - Levering RVS sluitplaat zonder opening"}, {n:"79", d:"P.a.i. sluitplaat"},
             {n:"80", d:"TL0152SS - Levering blindrozet"}, {n:"81", d:"P.a.i. blindrozet plaatsing"},
-            {n:"82", d:"ML420 - Levering motorslot beperkte inbouwdiepte"}, {n:"83", d:"ML820 - Levering motorslot uitlijnende correctie"},
-            {n:"84", d:"MB420 - Levering opbouwmodule"}, {n:"85", d:"P.a.i. inbouwen van motorslot deurstijl"},
-            {n:"86", d:"P.a.i. opbouwen motorslot met opbouwmodule"}, {n:"87", d:"EL432 - Levering motorslot 1-punt - enkelzijdig"},
-            {n:"88", d:"EL518 - Levering motorslot 1-punt - dubbelzijdig"}, {n:"89", d:"P.a.i. motorslot 1-punt deurblad"},
-            {n:"90", d:"MP520/GU - Levering motorslot 3-punt"}, {n:"91", d:"P.a.i. motorslot 3-punt deurblad"},
-            {n:"92", d:"MODULEC-SA-E - Levering slotvanger voor opbouw"}, {n:"93", d:"P.a.i. elektrische slotvanger opbouw"},
-            {n:"94", d:"LEKQ U4 - Levering elektrisch slot opbouw"}, {n:"95", d:"LIKQ U2 - P.a.i. elektrisch slot opbouw"},
-            {n:"96", d:"17SSMDT - Levering deurmagneet"}, {n:"97", d:"17DSMDT - Levering deurmagneet dubbel"},
-            {n:"98", d:"17WPM - Levering deurmagneet roestvrij waterdicht"}, {n:"99", d:"17ZLC - Levering beugels of profielen"},
-            {n:"100", d:"P.a.i. deurmagneet"}, {n:"101", d:"17SGMDT - Levering magneetstrip"},
-            {n:"102", d:"17DGMDT - Levering magneetstrip"}, {n:"103", d:"P.a.i. magneetstrip"},
-            {n:"104", d:"DLF29W - Levering kabeldoorvoer inbouw"}, {n:"105", d:"P.a.i. kabeldoorvoer inbouw"},
-            {n:"106", d:"DLS50W - Levering kabeldoorvoer opbouw"}, {n:"107", d:"P.a.i. kabeldoorvoer opbouw"},
-            {n:"108", d:"TL3106SS - Levering gewone deurkruk"}, {n:"109", d:"TL0401SS - Levering vaste deurkruk"},
-            {n:"110", d:"P.a.i. deurkruk"}, {n:"111", d:"B-2116 / B-1916 - Levering anti-paniekslot"},
-            {n:"112", d:"P.a.i. anti-paniekslot"}, {n:"113", d:"B-7400 - Levering paniekbaar"},
-            {n:"114", d:"P.a.i. paniekbaar"}, {n:"115", d:"TS91 - Levering deursluiter lichte deur"},
-            {n:"116", d:"TS93 EN5 - Levering deursluiter zware deur"}, {n:"117", d:"TS91+vastzetarm - Levering deursluiter open stand"},
-            {n:"118", d:"TS93 EN5+vastzetarm - Levering deursluiter open stand"}, {n:"119", d:"P.a.i. deursluiter"},
-            {n:"120", d:"VERTICLOSE-2 - Levering poortsluiter"}, {n:"121", d:"P.a.i. poortsluiter"},
+            {n:"82", d:"ML420 - Motorslot beperkte inbouwdiepte"}, {n:"83", d:"ML820 - Motorslot uitlijnende correctie"},
+            {n:"84", d:"MB420 - Opbouwmodule"}, {n:"85", d:"P.a.i. inbouwen motorslot deurstijl"},
+            {n:"86", d:"P.a.i. opbouwen motorslot"}, {n:"87", d:"EL432 - Motorslot 1-punt enkel"},
+            {n:"88", d:"EL518 - Motorslot 1-punt dubbel"}, {n:"89", d:"P.a.i. motorslot 1-punt"},
+            {n:"90", d:"MP520/GU - Motorslot 3-punt"}, {n:"91", d:"P.a.i. motorslot 3-punt"},
+            {n:"92", d:"MODULEC-SA-E - Slotvanger opbouw"}, {n:"93", d:"P.a.i. elektrische slotvanger opbouw"},
+            {n:"94", d:"LEKQ U4 - Elektrisch slot opbouw"}, {n:"95", d:"LIKQ U2 - P.a.i. slot opbouw"},
+            {n:"96", d:"17SSMDT - Deurmagneet"}, {n:"97", d:"17DSMDT - Deurmagneet dubbel"},
+            {n:"98", d:"17WPM - Deurmagneet waterdicht"}, {n:"99", d:"17ZLC - Beugels of profielen"},
+            {n:"100", d:"P.a.i. deurmagneet"}, {n:"101", d:"17SGMDT - Magneetstrip"},
+            {n:"102", d:"17DGMDT - Magneetstrip dubbel"}, {n:"103", d:"P.a.i. magneetstrip"},
+            {n:"104", d:"DLF29W - Kabeldoorvoer inbouw"}, {n:"105", d:"P.a.i. kabeldoorvoer inbouw"},
+            {n:"106", d:"DLS50W - Kabeldoorvoer opbouw"}, {n:"107", d:"P.a.i. kabeldoorvoer opbouw"},
+            {n:"108", d:"TL3106SS - Gewone deurkruk"}, {n:"109", d:"TL0401SS - Vaste deurkruk"},
+            {n:"110", d:"P.a.i. deurkruk"}, {n:"111", d:"B-2116 - Anti-paniekslot"},
+            {n:"112", d:"P.a.i. anti-paniekslot"}, {n:"113", d:"B-7400 - Paniekbaar"},
+            {n:"114", d:"P.a.i. paniekbaar"}, {n:"115", d:"TS91 - Deursluiter lichte deur"},
+            {n:"116", d:"TS93 EN5 - Deursluiter zware deur"}, {n:"117", d:"TS91+vastzet - Deursluiter open stand"},
+            {n:"118", d:"TS93+vastzet - Deursluiter open stand"}, {n:"119", d:"P.a.i. deursluiter"},
+            {n:"120", d:"VERTICLOSE-2 - Poortsluiter"}, {n:"121", d:"P.a.i. poortsluiter"},
             {n:"180", d:"Mul-T-Lock sleutel"}, {n:"181", d:"Mul-T-Lock cilinder"},
             {n:"182", d:"Cilinder draaiknop"}, {n:"183", d:"P.a.i. cilinder draaiknop"},
             {n:"184", d:"Hevelslot"}, {n:"185", d:"P.a.i. hevelslot"}
         ];
 
-        function setupAutoClear(input) {
-            input.addEventListener('focus', function() { if (this.value === '...') this.value = ''; });
-            input.addEventListener('blur', function() {
-                if (this.value.trim() === '') {
-                    this.value = '...';
-                    if (this.classList.contains('door-type')) updatePreview(this);
-                }
-            });
-        }
-
         function reindexDoors() {
-            const doors = document.querySelectorAll('.door-section');
-            doors.forEach((door, index) => {
-                const badge = door.querySelector('.door-number-badge');
-                if (badge) badge.innerText = index + 1;
-            });
+            const badges = document.querySelectorAll('.door-badge-num');
+            badges.forEach((badge, index) => { badge.innerText = index + 1; });
         }
 
         function addDoor(data = null) {
             const container = document.getElementById('doors-container');
-            const section = document.createElement('div');
-            section.className = "card door-section overflow-hidden mb-4";
-            
-            section.innerHTML = `
-                <div class="bg-red-50 p-4 flex justify-between items-center cursor-pointer no-print border-b border-red-100 hover:bg-red-100 transition" onclick="this.parentElement.classList.toggle('collapsed')">
+            const div = document.createElement('div');
+            div.className = "card door-section overflow-hidden relative";
+            div.innerHTML = `
+                <div class="no-print bg-red-50 p-3 flex justify-between items-center cursor-pointer border-b border-red-100" onclick="this.parentElement.classList.toggle('collapsed')">
                     <div class="flex items-center gap-3">
-                        <span class="door-number-badge bg-red-600 text-white w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold">0</span>
-                        <span class="font-bold text-red-800 uppercase text-sm">Deur: <span class="door-title-preview text-slate-500 italic">...</span></span>
+                        <span class="door-badge-num bg-red-600 text-white w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold shadow-sm">0</span>
+                        <span class="text-red-700 font-bold uppercase text-xs tracking-wider italic">Klap Open/Toe</span>
                     </div>
-                    <div class="flex items-center gap-4">
-                        <span class="text-[10px] font-bold text-red-500 uppercase tracking-widest flex items-center gap-1 bg-white px-2 py-1 rounded border border-red-200 shadow-sm"><i data-lucide="mouse-pointer-2" class="w-3 h-3"></i> Open/Toe</span>
-                        <button onclick="event.stopPropagation(); this.closest('.door-section').remove(); reindexDoors();" class="bg-red-600 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold">VERWIJDER</button>
-                    </div>
+                    <button onclick="event.stopPropagation(); this.closest('.door-section').remove(); reindexDoors();" class="bg-red-600 text-white px-3 py-1 rounded text-[10px] font-bold uppercase hover:bg-red-800 transition shadow-sm">Verwijder Deur</button>
                 </div>
                 <div class="door-content p-6">
-                    <div class="grid grid-cols-2 gap-4 mb-6 bg-slate-50 p-4 rounded-lg">
-                        <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Plaats</label><input type="text" class="input-field door-location autoclear" value="..."></div>
-                        <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Deurtype</label><input type="text" class="input-field door-type autoclear" oninput="updatePreview(this)" value="..."></div>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Plaats</label><input type="text" class="input-field door-loc" value="..."></div>
+                        <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Type Deur</label><input type="text" class="input-field door-type" value="..."></div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 mb-6">
-                        ${artikelen.map(i => `<div class="flex items-center gap-2 py-1 border-b border-red-50 text-[11px]">
-                            <input type="checkbox" class="door-item-check w-4 h-4 accent-red-600" data-n="${i.n}" data-desc="${i.d}"> ${i.n} - ${i.d}
-                        </div>`).join('')}
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1 mb-4 border-y border-red-50 py-4">
+                        ${artikelen.map(a => `<label class="flex items-center gap-2 text-[11px] hover:bg-red-50 rounded transition-colors p-1"><input type="checkbox" class="art-check" data-n="${a.n}" data-d="${a.d}"> <strong>${a.n}</strong> - ${a.d}</label>`).join('')}
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-red-100">
-                        <div><label class="text-[10px] font-bold text-red-600 uppercase mb-1">Geschatte werkuren</label><input type="text" class="input-field door-hours autoclear" value="..."></div>
-                        <div><label class="text-[10px] font-bold text-red-600 uppercase mb-1">Opmerkingen</label><textarea class="textarea-field door-notes autoclear">...</textarea></div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><label class="block text-[10px] font-bold text-red-600 uppercase mb-1 tracking-wider">Geschatte werkuren</label><input type="text" class="input-field door-hours" value="..."></div>
+                        <div><label class="block text-[10px] font-bold text-red-600 uppercase mb-1 tracking-wider">Opmerkingen</label><input type="text" class="input-field door-notes" value="..."></div>
                     </div>
-                    <div class="no-print bg-red-50 p-4 rounded-lg mt-6 border border-red-100">
-                        <label class="block text-[10px] font-bold text-red-700 mb-2 uppercase">Foto's</label>
-                        <input type="file" multiple accept="image/*" onchange="handlePhotos(event, this)">
+                    <div class="no-print mt-6 bg-red-50 p-4 rounded-lg border border-dashed border-red-200">
+                        <label class="block text-[10px] font-bold text-red-700 uppercase mb-2 italic">Foto's van de situatie:</label>
+                        <input type="file" multiple accept="image/*" onchange="handleImgs(event, this)">
+                        <div class="photo-area flex flex-wrap mt-3"></div>
                     </div>
-                    <div class="photo-area mt-4 flex flex-wrap"></div>
                 </div>
             `;
-            container.appendChild(section);
-            
-            // Koppel autoclear aan de nieuwe velden
-            section.querySelectorAll('.autoclear').forEach(input => setupAutoClear(input));
-            
-            if(data) fillDoorData(section, data);
+            container.appendChild(div);
+            if(data) fillDoorData(div, data);
             reindexDoors();
-            lucide.createIcons();
         }
 
-        function updatePreview(input) {
-            const preview = input.closest('.door-section').querySelector('.door-title-preview');
-            preview.innerText = input.value || "...";
-        }
-
-        function handlePhotos(event, input) {
-            const area = input.closest('.door-content').querySelector('.photo-area');
-            Array.from(event.target.files).forEach(file => {
+        function handleImgs(e, input) {
+            const area = input.closest('.door-section').querySelector('.photo-area');
+            Array.from(e.target.files).forEach(file => {
                 const reader = new FileReader();
-                reader.onload = e => {
-                    const div = document.createElement('div');
-                    div.className = "photo-preview-item";
-                    div.innerHTML = `<img src="${e.target.result}" class="photo-preview-img" data-full="${e.target.result}"><button onclick="this.parentElement.remove()" class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-5 h-5 text-xs">×</button>`;
-                    area.appendChild(div);
+                reader.onload = res => {
+                    const imgDiv = document.createElement('div');
+                    imgDiv.className = "relative inline-block";
+                    imgDiv.innerHTML = `<img src="${res.target.result}" class="photo-preview-img shadow-md"><button onclick="this.parentElement.remove()" class="absolute -top-1 -right-1 bg-red-600 text-white rounded-full w-5 h-5 text-xs shadow-lg">×</button>`;
+                    area.appendChild(imgDiv);
                 };
                 reader.readAsDataURL(file);
             });
         }
 
-        function generateHTMLContent() {
-            const rawDate = document.getElementById('currentDate').value;
-            let formattedDate = rawDate;
-            if(rawDate) {
-                const [year, month, day] = rawDate.split('-');
-                formattedDate = `${month}-${day}-${year}`;
-            }
-
-            let html = `<div style="font-family: Arial; padding: 10px;">
-                <div style="border: 2px solid #dc2626; margin-bottom: 20px;">
-                    <div style="background: #dc2626; color: white; padding: 10px; font-weight: bold; font-size: 16px;">OPMETING INBRAAKVEILIG - OVERZICHT</div>
-                    <table style="width: 100%; padding: 10px; font-size: 12px;">
-                        <tr><td><strong>Klant:</strong> ${document.getElementById('klantNaam').value}</td><td><strong>Verkoper:</strong> ${document.getElementById('verkoperNaam').value}</td></tr>
-                        <tr><td><strong>Project:</strong> ${document.getElementById('projectNaam').value}</td><td><strong>Datum:</strong> ${formattedDate}</td></tr>
-                        <tr><td colspan="2"><strong>Adres:</strong> ${document.getElementById('projectAdres').value}</td></tr>
-                    </table>
-                </div>`;
-
-            document.querySelectorAll('.door-section').forEach((s, index) => {
-                const loc = s.querySelector('.door-location').value;
-                const type = s.querySelector('.door-type').value;
-                const checked = Array.from(s.querySelectorAll('.door-item-check:checked'));
-                const photos = Array.from(s.querySelectorAll('.photo-preview-img'));
-
-                html += `<div style="${index > 0 ? 'page-break-before: always;' : ''} margin-top: 20px;">
-                    <div style="background: #444; color: white; padding: 8px; font-weight: bold; font-size: 14px;">DEUR ${index + 1}: ${type} | ${loc}</div>
-                    <table style="width: 100%; margin-top: 10px;">
-                        <tr>
-                            <td style="width: 40%; vertical-align: top; font-size: 10px;">
-                                <strong style="color: #dc2626;">ARTIKELEN:</strong><br>
-                                ${checked.length > 0 ? checked.map(c => `• ${c.dataset.n} - ${c.dataset.desc}<br>`).join('') : 'Geen'}
-                                <br><strong>Uren:</strong> ${s.querySelector('.door-hours').value}<br>
-                                <strong>Nota:</strong> ${s.querySelector('.door-notes').value}
-                            </td>
-                            <td style="text-align: center;">
-                                ${photos.map(img => `<img src="${img.dataset.full}" style="width: 280px; margin-bottom: 10px; border: 1px solid #ddd;">`).join('')}
-                            </td>
-                        </tr>
-                    </table>
-                </div>`;
+        function fillDoorData(div, d) {
+            div.querySelector('.door-loc').value = d.location || '...';
+            div.querySelector('.door-type').value = d.type || '...';
+            div.querySelector('.door-hours').value = d.hours || '...';
+            div.querySelector('.door-notes').value = d.notes || '...';
+            if(d.items) d.items.forEach(n => {
+                const cb = div.querySelector(`.art-check[data-n="${n}"]`);
+                if(cb) cb.checked = true;
             });
-            return html + `</div>`;
-        }
-
-        async function generateProfessionalPDF() {
-            const temp = document.getElementById('pdf-export-temp');
-            temp.innerHTML = generateHTMLContent();
-            temp.style.display = 'block';
-            const opt = { 
-                margin: 10, 
-                filename: `Opmeting_${document.getElementById('klantNaam').value}.pdf`, 
-                html2canvas: { scale: 2, useCORS: true }, 
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
-            };
-            await html2pdf().set(opt).from(temp).save();
-            temp.style.display = 'none';
-        }
-
-        function exportToWord() {
-            const header = `
-                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-                <head><meta charset='utf-8'><style>body{font-family:Arial;}</style></head><body>`;
-            const footer = "</body></html>";
-            const blob = new Blob([header + generateHTMLContent() + footer], { type: 'application/msword' });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = `Opmeting_${document.getElementById('klantNaam').value}.doc`;
-            link.click();
+            if(d.photos) {
+                const area = div.querySelector('.photo-area');
+                d.photos.forEach(src => {
+                    const imgDiv = document.createElement('div');
+                    imgDiv.className = "relative inline-block";
+                    imgDiv.innerHTML = `<img src="${src}" class="photo-preview-img shadow-md"><button onclick="this.parentElement.remove()" class="absolute -top-1 -right-1 bg-red-600 text-white rounded-full w-5 h-5 text-xs shadow-lg">×</button>`;
+                    area.appendChild(imgDiv);
+                });
+            }
         }
 
         function saveToFile() {
             const data = {
-                header: { 
-                    klant: document.getElementById('klantNaam').value, 
-                    project: document.getElementById('projectNaam').value, 
-                    verkoper: document.getElementById('verkoperNaam').value, 
-                    adres: document.getElementById('projectAdres').value, 
-                    datum: document.getElementById('currentDate').value 
-                },
+                header: { klant: document.getElementById('klantNaam').value, project: document.getElementById('projectNaam').value, verkoper: document.getElementById('verkoperNaam').value, adres: document.getElementById('projectAdres').value, datum: document.getElementById('displayDate').value },
                 doors: Array.from(document.querySelectorAll('.door-section')).map(s => ({
-                    location: s.querySelector('.door-location').value,
+                    location: s.querySelector('.door-loc').value,
                     type: s.querySelector('.door-type').value,
                     hours: s.querySelector('.door-hours').value,
                     notes: s.querySelector('.door-notes').value,
-                    items: Array.from(s.querySelectorAll('.door-item-check:checked')).map(c => c.dataset.n)
+                    items: Array.from(s.querySelectorAll('.art-check:checked')).map(c => c.dataset.n),
+                    photos: Array.from(s.querySelectorAll('.photo-preview-img')).map(img => img.src)
                 }))
             };
             const a = document.createElement('a');
             a.href = URL.createObjectURL(new Blob([JSON.stringify(data)], {type: 'application/json'}));
-            a.download = `Data_Inbraakveilig.json`; a.click();
+            a.download = `Opmeting_${data.header.klant}.json`;
+            a.click();
         }
 
         function loadFromFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
             const reader = new FileReader();
             reader.onload = e => {
                 const data = JSON.parse(e.target.result);
@@ -269,32 +181,69 @@
                 document.getElementById('projectNaam').value = data.header.project;
                 document.getElementById('verkoperNaam').value = data.header.verkoper;
                 document.getElementById('projectAdres').value = data.header.adres;
-                document.getElementById('currentDate').value = data.header.datum;
-                
+                document.getElementById('displayDate').value = data.header.datum;
                 document.getElementById('doors-container').innerHTML = '';
-                data.doors.forEach(d => addDoor(d));
+                if(data.doors) data.doors.forEach(d => addDoor(d));
             };
-            reader.readAsText(event.target.files[0]);
+            reader.readAsText(file);
         }
 
-        function fillDoorData(s, d) {
-            s.querySelector('.door-location').value = d.location || '...';
-            s.querySelector('.door-type').value = d.type || '...';
-            s.querySelector('.door-hours').value = d.hours || '...';
-            s.querySelector('.door-notes').value = d.notes || '...';
-            if(d.items) d.items.forEach(n => { 
-                const c = s.querySelector(`.door-item-check[data-n="${n}"]`); 
-                if(c) c.checked = true; 
+        function generateProfessionalPDF() {
+            const element = document.createElement('div');
+            let content = `<div style="font-family:sans-serif; padding:10px;">
+                <div style="border:3px solid #dc2626; padding:15px; margin-bottom:20px;">
+                    <h1 style="color:#dc2626; margin:0 0 5px 0; font-style:italic; text-transform:uppercase;">Opmetingsverslag</h1>
+                    <table style="width:100%; border-collapse:collapse; font-size:12px;">
+                        <tr><td style="padding:4px;"><strong>Klant:</strong> ${document.getElementById('klantNaam').value}</td><td style="padding:4px;"><strong>Project:</strong> ${document.getElementById('projectNaam').value}</td></tr>
+                        <tr><td style="padding:4px;"><strong>Adres:</strong> ${document.getElementById('projectAdres').value}</td><td style="padding:4px;"><strong>Datum:</strong> ${document.getElementById('displayDate').value}</td></tr>
+                    </table>
+                </div>`;
+
+            document.querySelectorAll('.door-section').forEach((s, i) => {
+                const checkedItems = Array.from(s.querySelectorAll('.art-check:checked'));
+                const photos = Array.from(s.querySelectorAll('.photo-preview-img'));
+                
+                // Bepaal de grootte van de foto's op basis van de hoeveelheid tekst
+                // Als er minder dan 4 artikelen zijn, maken we de foto's groter.
+                const photoWidth = checkedItems.length < 4 ? '90%' : '45%';
+                const photoMaxHeight = checkedItems.length < 4 ? '600px' : '300px';
+
+                content += `<div style="border:1px solid #ccc; margin-bottom:20px; page-break-after:always; border-radius:8px; overflow:hidden; min-height:95vh; display:flex; flex-direction:column;">
+                    <div style="background:#f8f8f8; padding:10px; border-bottom:2px solid #dc2626; font-weight:bold; color:#dc2626;">DEUR ${i+1}: ${s.querySelector('.door-loc').value} (${s.querySelector('.door-type').value})</div>
+                    <div style="padding:15px; flex-grow:0;">
+                        <p><strong>Geselecteerde Artikelen:</strong></p>
+                        <div style="column-count:2; font-size:11px;">
+                            ${checkedItems.map(c => `• ${c.dataset.n} - ${c.dataset.d}`).join('<br>') || 'Geen'}
+                        </div>
+                        <p style="margin-top:15px; font-size:12px;"><strong>Uren:</strong> ${s.querySelector('.door-hours').value} | <strong>Opmerkingen:</strong> ${s.querySelector('.door-notes').value}</p>
+                    </div>`;
+                
+                if(photos.length > 0) {
+                    content += `<div style="background:#fafafa; padding:20px; text-align:center; flex-grow:1; display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:10px;">`;
+                    photos.forEach(img => {
+                        content += `<img src="${img.src}" style="width:${photoWidth}; max-height:${photoMaxHeight}; object-fit:contain; border:1px solid #ddd; border-radius:4px; background:white;">`;
+                    });
+                    content += `</div>`;
+                }
+                content += `</div>`;
             });
-            updatePreview(s.querySelector('.door-type'));
+            content += `</div>`;
+            element.innerHTML = content;
+
+            const opt = {
+                margin: 5,
+                filename: `Opmeting_${document.getElementById('klantNaam').value}.pdf`,
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().from(element).set(opt).save();
         }
 
-        window.onload = () => { 
-            document.getElementById('currentDate').valueAsDate = new Date(); 
-            // Activeer autoclear voor de header velden
-            document.querySelectorAll('.autoclear').forEach(input => setupAutoClear(input));
-            addDoor(); 
-            lucide.createIcons(); 
+        window.onload = () => {
+            const d = new Date();
+            document.getElementById('displayDate').value = `${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}-${d.getFullYear()}`;
+            addDoor();
+            document.addEventListener('focusin', e => { if(e.target.value === '...') e.target.value = ''; });
         };
     </script>
 </body>
