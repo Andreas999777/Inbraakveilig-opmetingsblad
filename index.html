@@ -19,15 +19,15 @@
         @media print { .no-print { display: none !important; } }
     </style>
 </head>
-<body>
+<body oninput="autoSave()">
 
     <div class="max-w-5xl mx-auto">
         <div class="no-print mb-8 p-4 bg-white rounded-xl shadow-lg border border-red-200 flex flex-wrap gap-3 items-center">
             <h2 class="text-red-700 font-bold mr-4 uppercase tracking-wider">Inbraakveilig</h2>
-            <button onclick="saveToFile()" class="action-button bg-slate-800 text-white hover:bg-black">💾 Data Opslaan</button>
-            <label class="action-button bg-slate-800 text-white hover:bg-black cursor-pointer">📂 Data Laden <input type="file" class="hidden" onchange="loadFromFile(event)"></label>
+            <button onclick="saveToFile()" class="action-button bg-slate-800 text-white hover:bg-black">💾 Export JSON</button>
+            <label class="action-button bg-slate-800 text-white hover:bg-black cursor-pointer">📂 Import JSON <input type="file" class="hidden" onchange="loadFromFile(event)"></label>
             <button onclick="generateProfessionalPDF()" class="action-button bg-red-600 text-white hover:bg-red-700">📄 Genereer PDF</button>
-            <a href="https://www.adobe.com/be_nl/acrobat/online/pdf-to-word.html" target="_blank" class="action-button bg-blue-600 text-white hover:bg-blue-700">🔄 Omzetten Word</a>
+            <button onclick="clearForm()" class="action-button bg-gray-500 text-white hover:bg-gray-700">🗑️ Wis Formulier</button>
         </div>
 
         <div class="card p-6 border-t-4 border-red-600">
@@ -42,7 +42,7 @@
 
         <div id="doors-container"></div>
 
-        <button onclick="addDoor()" class="no-print w-full py-4 border-2 border-dashed border-red-400 rounded-xl text-red-600 font-bold hover:bg-red-50 transition mb-20">
+        <button onclick="addDoor(); autoSave();" class="no-print w-full py-4 border-2 border-dashed border-red-400 rounded-xl text-red-600 font-bold hover:bg-red-50 transition mb-20">
             + Nieuwe deur toevoegen
         </button>
     </div>
@@ -93,22 +93,20 @@
                         <span class="door-badge-num bg-red-600 text-white w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold shadow-sm">0</span>
                         <span class="text-red-700 font-bold uppercase text-xs tracking-wider italic">Klap Open/Toe</span>
                     </div>
-                    <button onclick="event.stopPropagation(); this.closest('.door-section').remove(); reindexDoors();" class="bg-red-600 text-white px-3 py-1 rounded text-[10px] font-bold uppercase hover:bg-red-800 transition shadow-sm">Verwijder Deur</button>
+                    <button onclick="event.stopPropagation(); this.closest('.door-section').remove(); reindexDoors(); autoSave();" class="bg-red-600 text-white px-3 py-1 rounded text-[10px] font-bold uppercase hover:bg-red-800 transition shadow-sm">Verwijder Deur</button>
                 </div>
                 <div class="door-content p-6">
                     <div class="grid grid-cols-2 gap-4 mb-4">
-                        <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Plaats</label><input type="text" class="input-field door-loc" value="..."></div>
-                        <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Type Deur</label><input type="text" class="input-field door-type" value="..."></div>
+                        <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Plaats</label><input type="text" class="input-field door-loc" value="..." oninput="autoSave()"></div>
+                        <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Type Deur</label><input type="text" class="input-field door-type" value="..." oninput="autoSave()"></div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1 mb-4 border-y border-red-50 py-4">
-                        ${artikelen.map(a => `<label class="flex items-center gap-2 text-[11px] hover:bg-red-50 rounded transition-colors p-1"><input type="checkbox" class="art-check" data-n="${a.n}" data-d="${a.d}"> <strong>${a.n}</strong> - ${a.d}</label>`).join('')}
+                        ${artikelen.map(a => `<label class="flex items-center gap-2 text-[11px] hover:bg-red-50 rounded transition-colors p-1"><input type="checkbox" class="art-check" data-n="${a.n}" data-d="${a.d}" onchange="autoSave()"> <strong>${a.n}</strong> - ${a.d}</label>`).join('')}
                     </div>
-                    
                     <div class="grid grid-cols-2 gap-4 mb-4">
-                        <div><label class="block text-[10px] font-bold text-red-600 uppercase mb-1 tracking-wider">Geschatte werkuren</label><input type="text" class="input-field door-hours" value="..."></div>
-                        <div><label class="block text-[10px] font-bold text-red-600 uppercase mb-1 tracking-wider">Opmerkingen</label><input type="text" class="input-field door-notes" value="..."></div>
+                        <div><label class="block text-[10px] font-bold text-red-600 uppercase mb-1 tracking-wider">Geschatte werkuren</label><input type="text" class="input-field door-hours" value="..." oninput="autoSave()"></div>
+                        <div><label class="block text-[10px] font-bold text-red-600 uppercase mb-1 tracking-wider">Opmerkingen</label><input type="text" class="input-field door-notes" value="..." oninput="autoSave()"></div>
                     </div>
-
                     <div class="no-print mt-6 bg-red-50 p-4 rounded-lg border border-dashed border-red-200">
                         <label class="block text-[10px] font-bold text-red-700 uppercase mb-2 italic">Foto's van de situatie:</label>
                         <div class="flex flex-wrap gap-2">
@@ -135,8 +133,9 @@
                 reader.onload = res => {
                     const imgDiv = document.createElement('div');
                     imgDiv.className = "relative inline-block";
-                    imgDiv.innerHTML = `<img src="${res.target.result}" class="photo-preview-img shadow-md"><button onclick="this.parentElement.remove()" class="absolute -top-1 -right-1 bg-red-600 text-white rounded-full w-5 h-5 text-xs shadow-lg">×</button>`;
+                    imgDiv.innerHTML = `<img src="${res.target.result}" class="photo-preview-img shadow-md"><button onclick="this.parentElement.remove(); autoSave();" class="absolute -top-1 -right-1 bg-red-600 text-white rounded-full w-5 h-5 text-xs shadow-lg">×</button>`;
                     area.appendChild(imgDiv);
+                    autoSave();
                 };
                 reader.readAsDataURL(file);
             });
@@ -156,14 +155,14 @@
                 d.photos.forEach(src => {
                     const imgDiv = document.createElement('div');
                     imgDiv.className = "relative inline-block";
-                    imgDiv.innerHTML = `<img src="${src}" class="photo-preview-img shadow-md"><button onclick="this.parentElement.remove()" class="absolute -top-1 -right-1 bg-red-600 text-white rounded-full w-5 h-5 text-xs shadow-lg">×</button>`;
+                    imgDiv.innerHTML = `<img src="${src}" class="photo-preview-img shadow-md"><button onclick="this.parentElement.remove(); autoSave();" class="absolute -top-1 -right-1 bg-red-600 text-white rounded-full w-5 h-5 text-xs shadow-lg">×</button>`;
                     area.appendChild(imgDiv);
                 });
             }
         }
 
-        function saveToFile() {
-            const data = {
+        function getFormData() {
+            return {
                 header: { klant: document.getElementById('klantNaam').value, project: document.getElementById('projectNaam').value, verkoper: document.getElementById('verkoperNaam').value, adres: document.getElementById('projectAdres').value, datum: document.getElementById('displayDate').value },
                 doors: Array.from(document.querySelectorAll('.door-section')).map(s => ({
                     location: s.querySelector('.door-loc').value,
@@ -174,6 +173,22 @@
                     photos: Array.from(s.querySelectorAll('.photo-preview-img')).map(img => img.src)
                 }))
             };
+        }
+
+        function autoSave() {
+            const data = getFormData();
+            localStorage.setItem('inbraakveilig_autosave', JSON.stringify(data));
+        }
+
+        function clearForm() {
+            if(confirm("Weet je zeker dat je het hele formulier wilt wissen?")) {
+                localStorage.removeItem('inbraakveilig_autosave');
+                location.reload();
+            }
+        }
+
+        function saveToFile() {
+            const data = getFormData();
             const a = document.createElement('a');
             a.href = URL.createObjectURL(new Blob([JSON.stringify(data)], {type: 'application/json'}));
             a.download = `Opmeting_${data.header.klant}.json`;
@@ -186,49 +201,55 @@
             const reader = new FileReader();
             reader.onload = e => {
                 const data = JSON.parse(e.target.result);
-                document.getElementById('klantNaam').value = data.header.klant;
-                document.getElementById('projectNaam').value = data.header.project;
-                document.getElementById('verkoperNaam').value = data.header.verkoper;
-                document.getElementById('projectAdres').value = data.header.adres;
-                document.getElementById('displayDate').value = data.header.datum;
-                document.getElementById('doors-container').innerHTML = '';
-                if(data.doors) data.doors.forEach(d => addDoor(d));
+                renderData(data);
+                autoSave();
             };
             reader.readAsText(file);
         }
 
+        function renderData(data) {
+            document.getElementById('klantNaam').value = data.header.klant;
+            document.getElementById('projectNaam').value = data.header.project;
+            document.getElementById('verkoperNaam').value = data.header.verkoper;
+            document.getElementById('projectAdres').value = data.header.adres;
+            document.getElementById('displayDate').value = data.header.datum;
+            document.getElementById('doors-container').innerHTML = '';
+            if(data.doors) data.doors.forEach(d => addDoor(d));
+        }
+
         function generateProfessionalPDF() {
             const element = document.createElement('div');
+            const data = getFormData();
             let content = `<div style="font-family:sans-serif; padding:10px;">
                 <div style="border:3px solid #dc2626; padding:15px; margin-bottom:20px;">
                     <h1 style="color:#dc2626; margin:0 0 5px 0; font-style:italic; text-transform:uppercase;">Opmetingsverslag</h1>
                     <table style="width:100%; border-collapse:collapse; font-size:12px;">
-                        <tr><td style="padding:4px;"><strong>Klant:</strong> ${document.getElementById('klantNaam').value}</td><td style="padding:4px;"><strong>Project:</strong> ${document.getElementById('projectNaam').value}</td></tr>
-                        <tr><td style="padding:4px;"><strong>Adres:</strong> ${document.getElementById('projectAdres').value}</td><td style="padding:4px;"><strong>Datum:</strong> ${document.getElementById('displayDate').value}</td></tr>
+                        <tr><td style="padding:4px;"><strong>Klant:</strong> ${data.header.klant}</td><td style="padding:4px;"><strong>Project:</strong> ${data.header.project}</td></tr>
+                        <tr><td style="padding:4px;"><strong>Adres:</strong> ${data.header.adres}</td><td style="padding:4px;"><strong>Datum:</strong> ${data.header.datum}</td></tr>
                     </table>
                 </div>`;
 
-            document.querySelectorAll('.door-section').forEach((s, i) => {
-                const checkedItems = Array.from(s.querySelectorAll('.art-check:checked'));
-                const photos = Array.from(s.querySelectorAll('.photo-preview-img'));
-                const photoWidth = checkedItems.length < 4 ? '90%' : '45%';
-                const photoMaxHeight = checkedItems.length < 4 ? '600px' : '300px';
+            data.doors.forEach((d, i) => {
+                const photoWidth = d.items.length < 4 ? '90%' : '45%';
+                const photoMaxHeight = d.items.length < 4 ? '600px' : '300px';
 
-                // Verwijder page-break-after en min-height om wit blad te voorkomen
-                content += `<div style="border:1px solid #ccc; margin-bottom:20px; border-radius:8px; overflow:hidden; display:flex; flex-direction:column;">
-                    <div style="background:#f8f8f8; padding:10px; border-bottom:2px solid #dc2626; font-weight:bold; color:#dc2626;">DEUR ${i+1}: ${s.querySelector('.door-loc').value} (${s.querySelector('.door-type').value})</div>
-                    <div style="padding:15px; flex-grow:0;">
+                content += `<div style="border:1px solid #ccc; margin-bottom:20px; border-radius:8px; overflow:hidden; display:flex; flex-direction:column; page-break-inside: avoid;">
+                    <div style="background:#f8f8f8; padding:10px; border-bottom:2px solid #dc2626; font-weight:bold; color:#dc2626;">DEUR ${i+1}: ${d.location} (${d.type})</div>
+                    <div style="padding:15px;">
                         <p><strong>Geselecteerde Artikelen:</strong></p>
                         <div style="column-count:2; font-size:11px;">
-                            ${checkedItems.map(c => `• ${c.dataset.n} - ${c.dataset.d}`).join('<br>') || 'Geen'}
+                            ${d.items.map(n => {
+                                const art = artikelen.find(a => a.n === n);
+                                return art ? `• ${art.n} - ${art.d}` : `• ${n}`;
+                            }).join('<br>') || 'Geen'}
                         </div>
-                        <p style="margin-top:15px; font-size:12px;"><strong>Uren:</strong> ${s.querySelector('.door-hours').value} | <strong>Opmerkingen:</strong> ${s.querySelector('.door-notes').value}</p>
+                        <p style="margin-top:15px; font-size:12px;"><strong>Uren:</strong> ${d.hours} | <strong>Opmerkingen:</strong> ${d.notes}</p>
                     </div>`;
                 
-                if(photos.length > 0) {
-                    content += `<div style="background:#fafafa; padding:20px; text-align:center; flex-grow:1; display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:10px;">`;
-                    photos.forEach(img => {
-                        content += `<img src="${img.src}" style="width:${photoWidth}; max-height:${photoMaxHeight}; object-fit:contain; border:1px solid #ddd; border-radius:4px; background:white;">`;
+                if(d.photos && d.photos.length > 0) {
+                    content += `<div style="background:#fafafa; padding:20px; text-align:center; display:flex; flex-wrap:wrap; justify-content:center; gap:10px;">`;
+                    d.photos.forEach(src => {
+                        content += `<img src="${src}" style="width:${photoWidth}; max-height:${photoMaxHeight}; object-fit:contain; border:1px solid #ddd; border-radius:4px; background:white;">`;
                     });
                     content += `</div>`;
                 }
@@ -237,19 +258,23 @@
             content += `</div>`;
             element.innerHTML = content;
 
-            const opt = {
+            html2pdf().from(element).set({
                 margin: 5,
-                filename: `Opmeting_${document.getElementById('klantNaam').value}.pdf`,
+                filename: `Opmeting_${data.header.klant}.pdf`,
                 html2canvas: { scale: 2, useCORS: true },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-            html2pdf().from(element).set(opt).save();
+            }).save();
         }
 
         window.onload = () => {
-            const d = new Date();
-            document.getElementById('displayDate').value = `${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}-${d.getFullYear()}`;
-            addDoor();
+            const savedData = localStorage.getItem('inbraakveilig_autosave');
+            if (savedData) {
+                renderData(JSON.parse(savedData));
+            } else {
+                const d = new Date();
+                document.getElementById('displayDate').value = `${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}-${d.getFullYear()}`;
+                addDoor();
+            }
             document.addEventListener('focusin', e => { if(e.target.value === '...') e.target.value = ''; });
         };
     </script>
