@@ -27,6 +27,7 @@
             <button onclick="saveToFile()" class="action-button bg-slate-800 text-white hover:bg-black">💾 Export JSON</button>
             <label class="action-button bg-slate-800 text-white hover:bg-black cursor-pointer">📂 Import JSON <input type="file" class="hidden" onchange="loadFromFile(event)"></label>
             <button onclick="generateProfessionalPDF()" class="action-button bg-red-600 text-white hover:bg-red-700">📄 Genereer PDF</button>
+            <a href="https://www.adobe.com/be_nl/acrobat/online/pdf-to-word.html" target="_blank" class="action-button bg-blue-600 text-white hover:bg-blue-700">🔄 Omzetten Word</a>
             <button onclick="clearForm()" class="action-button bg-gray-500 text-white hover:bg-gray-700">🗑️ Wis Formulier</button>
         </div>
 
@@ -83,6 +84,12 @@
             badges.forEach((badge, index) => { badge.innerText = index + 1; });
         }
 
+        function updateDoorTitle(input) {
+            const label = input.closest('.door-section').querySelector('.door-title-text');
+            const val = input.value.trim();
+            label.innerText = (val && val !== '...') ? `DEUR: ${val}` : "Klap Open/Toe";
+        }
+
         function addDoor(data = null) {
             const container = document.getElementById('doors-container');
             const div = document.createElement('div');
@@ -91,13 +98,13 @@
                 <div class="no-print bg-red-50 p-3 flex justify-between items-center cursor-pointer border-b border-red-100" onclick="this.parentElement.classList.toggle('collapsed')">
                     <div class="flex items-center gap-3">
                         <span class="door-badge-num bg-red-600 text-white w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold shadow-sm">0</span>
-                        <span class="text-red-700 font-bold uppercase text-xs tracking-wider italic">Klap Open/Toe</span>
+                        <span class="door-title-text text-red-700 font-bold uppercase text-xs tracking-wider italic">Klap Open/Toe</span>
                     </div>
                     <button onclick="event.stopPropagation(); this.closest('.door-section').remove(); reindexDoors(); autoSave();" class="bg-red-600 text-white px-3 py-1 rounded text-[10px] font-bold uppercase hover:bg-red-800 transition shadow-sm">Verwijder Deur</button>
                 </div>
                 <div class="door-content p-6">
                     <div class="grid grid-cols-2 gap-4 mb-4">
-                        <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Plaats</label><input type="text" class="input-field door-loc" value="..." oninput="autoSave()"></div>
+                        <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Plaats</label><input type="text" class="input-field door-loc" value="..." oninput="updateDoorTitle(this); autoSave()"></div>
                         <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Type Deur</label><input type="text" class="input-field door-type" value="..." oninput="autoSave()"></div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1 mb-4 border-y border-red-50 py-4">
@@ -122,7 +129,10 @@
                 </div>
             `;
             container.appendChild(div);
-            if(data) fillDoorData(div, data);
+            if(data) {
+                fillDoorData(div, data);
+                updateDoorTitle(div.querySelector('.door-loc'));
+            }
             reindexDoors();
         }
 
