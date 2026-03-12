@@ -49,35 +49,61 @@
     </div>
 
     <script>
-        // Hier zijn alle artikelen gedefinieerd, inclusief de uren (t = uren in decimale vorm, ts = tekst op scherm)
         const artikelen = [
-            {n:"74", d:"RST00U - Levering ontsluiter fail safe"}, {n:"75", d:"ST00US - Levering ontsluiter fail secure"},
-            {n:"76", d:"P.a.i. elektrische ontsluiter", t:0.5, ts:"30 min"}, {n:"77", d:"32LP - Levering RVS sluitplaat 32LP"},
-            {n:"78", d:"19LP - Levering RVS sluitplaat zonder opening"}, {n:"79", d:"P.a.i. sluitplaat", t:1, ts:"1 uur"},
-            {n:"80", d:"TL0152SS - Levering blindrozet"}, {n:"81", d:"P.a.i. blindrozet plaatsing", t:0.25, ts:"15 min"},
-            {n:"82", d:"ML420 - Motorslot beperkte inbouwdiepte"}, {n:"83", d:"ML820 - Motorslot uitlijnende correctie"},
-            {n:"84", d:"MB420 - Opbouwmodule"}, {n:"85", d:"P.a.i. inbouwen motorslot deurstijl", t:3, ts:"3 uur"},
-            {n:"86", d:"P.a.i. opbouwen motorslot", t:1, ts:"1 uur"}, {n:"87", d:"EL432 - Motorslot 1-punt enkel"},
-            {n:"88", d:"EL518 - Motorslot 1-punt dubbel"}, {n:"89", d:"P.a.i. motorslot 1-punt", t:4, ts:"4 uur"},
-            {n:"90", d:"MP520/GU - Motorslot 3-punt"}, {n:"91", d:"P.a.i. motorslot 3-punt", t:5, ts:"5 uur"},
-            {n:"92", d:"MODULEC-SA-E - Slotvanger opbouw"}, {n:"93", d:"P.a.i. elektrische slotvanger opbouw", t:2, ts:"2 uur"},
-            {n:"94", d:"LEKQ U4 - Elektrisch slot opbouw"}, {n:"95", d:"LIKQ U2 - P.a.i. slot opbouw", t:3, ts:"3 uur"},
-            {n:"96", d:"17SSMDT - Deurmagneet"}, {n:"97", d:"17DSMDT - Deurmagneet dubbel"},
-            {n:"98", d:"17WPM - Deurmagneet waterdicht"}, {n:"99", d:"17ZLC - Beugels of profielen"},
-            {n:"100", d:"P.a.i. deurmagneet", t:1.5, ts:"1,5 uur"}, {n:"101", d:"17SGMDT - Magneetstrip"},
-            {n:"102", d:"17DGMDT - Magneetstrip dubbel"}, {n:"103", d:"P.a.i. magneetstrip", t:3, ts:"3 uur"},
-            {n:"104", d:"DLF29W - Kabeldoorvoer inbouw"}, {n:"105", d:"P.a.i. kabeldoorvoer inbouw", t:2, ts:"2 uur"},
-            {n:"106", d:"DLS50W - Kabeldoorvoer opbouw"}, {n:"107", d:"P.a.i. kabeldoorvoer opbouw", t:0.5, ts:"30 min"},
-            {n:"108", d:"TL3106SS - Gewone deurkruk"}, {n:"109", d:"TL0401SS - Vaste deurkruk"},
-            {n:"110", d:"P.a.i. deurkruk", t:0.5, ts:"30 min"}, {n:"111", d:"B-2116 - Anti-paniekslot"},
-            {n:"112", d:"P.a.i. anti-paniekslot", t:1.5, ts:"1,5 uur"}, {n:"113", d:"B-7400 - Paniekbaar"},
-            {n:"114", d:"P.a.i. paniekbaar", t:2.5, ts:"2,5 uur"}, {n:"115", d:"TS91 - Deursluiter lichte deur"},
-            {n:"116", d:"TS93 EN5 - Deursluiter zware deur"}, {n:"117", d:"TS91+vastzet - Deursluiter open stand"},
-            {n:"118", d:"TS93+vastzet - Deursluiter open stand"}, {n:"119", d:"P.a.i. deursluiter", t:1, ts:"1 uur"},
-            {n:"120", d:"VERTICLOSE-2 - Poortsluiter"}, {n:"121", d:"P.a.i. poortsluiter", t:2, ts:"2 uur"},
-            {n:"180", d:"Mul-T-Lock sleutel"}, {n:"181", d:"Mul-T-Lock cilinder"},
-            {n:"182", d:"Cilinder draaiknop"}, {n:"183", d:"P.a.i. cilinder draaiknop", t:0.25, ts:"15 min"},
-            {n:"184", d:"Hevelslot"}, {n:"185", d:"P.a.i. hevelslot", t:0.5, ts:"30 min"}
+            {n:"74", d:"RST00U - Levering ontsluiter fail safe"},
+            {n:"75", d:"ST00US - Levering ontsluiter fail secure"},
+            {n:"76", d:"Plaatsing - P.a.i. elektrische ontsluiter", t:0.5, ts:"30 min"},
+            {n:"77", d:"32LP - Levering RVS sluitplaat 32LP"},
+            {n:"78", d:"19LP - Levering RVS sluitplaat zonder opening"},
+            {n:"79", d:"plaatsing - P.a.i. sluitplaat", t:1, ts:"1 uur"},
+            {n:"80", d:"TL0152SS - Levering blindrozet"},
+            {n:"81", d:"plaatsing - P.a.i. blindrozet plaatsing", t:0.25, ts:"15 min"},
+            {n:"82", d:"ML420 - Levering motorslot 1-punt beperkte inbouwdiepte"},
+            {n:"83", d:"ML820 - Levering motorslot 1-punt uitlijnende correctie"},
+            {n:"84", d:"MB420 - Levering opbouwmodule"},
+            {n:"85", d:"plaatsing - P.a.i. inbouwen van motorslot deurstijl", t:3, ts:"3 uur"},
+            {n:"86", d:"plaatsing - P.a.i. opbouwen van motorslot deurstijl met behulp van opbouwmodule", t:1, ts:"1 uur"},
+            {n:"87", d:"EL432 - Levering motorslot 1-punt deur - enkelzijdig"},
+            {n:"88", d:"EL518 - Levering motorslot 1-punt deur - dubbelzijdig"},
+            {n:"89", d:"plaatsing - P.a.i. motorslot 1-punt deurblad", t:4, ts:"4 uur"},
+            {n:"90", d:"MP520/GU - Levering motorslot 3-punt"},
+            {n:"91", d:"plaatsing - P.a.i. motorslot 3-punt deurblad", t:5, ts:"5 uur"},
+            {n:"92", d:"MODULEC-SA-E - Levering slotvanger voor opbouw"},
+            {n:"93", d:"plaatsing - P.a.i. elektrische slotvanger voor opbouw", t:2, ts:"2 uur"},
+            {n:"94", d:"LEKQ U4 - Levering elektrisch slot in opbouw"},
+            {n:"95", d:"LIKQ U2 - P.a.i. elektrisch slot in opbouw", t:3, ts:"3 uur"},
+            {n:"96", d:"17SSMDT - Levering deurmagneet"},
+            {n:"97", d:"17DSMDT - Levering deurmagneet dubbel"},
+            {n:"98", d:"17WPM - Levering deurmagneet roestvrij waterdicht"},
+            {n:"99", d:"17ZLC - Levering beugels of profielen"},
+            {n:"100", d:"plaatsing - P.a.i. deurmagneet", t:1.5, ts:"1,5 uur"},
+            {n:"101", d:"17SGMDT - Levering magneetstrip"},
+            {n:"102", d:"17DGMDT - Levering magneetstrip"},
+            {n:"103", d:"plaatsing - P.a.i. magneetstrip", t:3, ts:"3 uur"},
+            {n:"104", d:"DLF29W - Levering kabeldoorvoer inbouw"},
+            {n:"105", d:"plaatsing - P.a.i. kabeldoorvoer inbouw", t:2, ts:"2 uur"},
+            {n:"106", d:"DLS50W - Levering kabeldoorvoer opbouw"},
+            {n:"107", d:"plaatsing - P.a.i. kabeldoorvoer opbouw", t:0.5, ts:"30 min"},
+            {n:"108", d:"TL3106SS - Levering gewone deurkruk"},
+            {n:"109", d:"TL0401SS - Levering vaste deurkruk"},
+            {n:"110", d:"plaatsing - P.a.i. deurkruk", t:0.5, ts:"30 min"},
+            {n:"111", d:"B-2116 of B-1916 - Levering anti-paniekslot"},
+            {n:"112", d:"plaatsing - P.a.i. anti-paniekslot", t:1.5, ts:"1,5 uur"},
+            {n:"113", d:"B-7400 - Levering paniekbaar"},
+            {n:"114", d:"plaatsing - P.a.i. paniekbaar", t:2.5, ts:"2,5 uur"},
+            {n:"115", d:"TS91 - Levering deursluiter lichte deur"},
+            {n:"116", d:"TS93 EN5 - Levering deursluiter zware deur"},
+            {n:"117", d:"TS91 + vastzetarm - Levering deursluiter met open stand lichte deur"},
+            {n:"118", d:"TS93 EN5 + vastzetarm - Levering deursluiter met open stand zware deur"},
+            {n:"119", d:"plaatsing - P.a.i. deursluiter", t:1, ts:"1 uur"},
+            {n:"120", d:"VERTICLOSE-2 - Levering poortsluiter"},
+            {n:"121", d:"plaatsing - P.a.i. poortsluiter", t:2, ts:"2 uur"},
+            {n:"180", d:"Levering Mul-T-Lock sleutel"},
+            {n:"181", d:"Levering Mul-T-Lock cilinder"},
+            {n:"182", d:"Cilinder met draaiknop"},
+            {n:"183", d:"P.a.i. cilinder met draaiknop", t:0.25, ts:"15 min"},
+            {n:"184", d:"Levering hevelslot"},
+            {n:"185", d:"P.a.i. hevelslot", t:0.5, ts:"30 min"}
         ];
 
         function reindexDoors() {
@@ -91,7 +117,6 @@
             label.innerText = (val && val !== '...') ? `DEUR: ${val}` : "Klap Open/Toe";
         }
 
-        // De functie die uren ophaalt van de vinkjes en optelt
         function calculateHours(el) {
             const section = el.closest('.door-section');
             const checkboxes = section.querySelectorAll('.art-check:checked');
@@ -111,7 +136,6 @@
                 if (m > 0) timeStr += `${m} min`;
                 hoursInput.value = timeStr.trim();
             } else {
-                // Maakt het veld weer leeg als er geen artikelen met tijd zijn aangevinkt
                 if (hoursInput.value.includes('uur') || hoursInput.value.includes('min')) {
                     hoursInput.value = '...';
                 }
@@ -144,8 +168,8 @@
                             </label>`).join('')}
                     </div>
                     <div class="grid grid-cols-2 gap-4 mb-4">
-                        <div><label class="block text-[10px] font-bold text-red-600 uppercase mb-1 tracking-wider">Geschatte werkuren</label><input type="text" class="input-field door-hours" value="..." oninput="autoSave()"></div>
-                        <div><label class="block text-[10px] font-bold text-red-600 uppercase mb-1 tracking-wider">Opmerkingen</label><input type="text" class="input-field door-notes" value="..." oninput="autoSave()"></div>
+                        <div><label class="block text-[10px] font-bold text-red-600 uppercase mb-1 tracking-wider">Geschatte werkuren (186)</label><input type="text" class="input-field door-hours" value="..." oninput="autoSave()"></div>
+                        <div><label class="block text-[10px] font-bold text-red-600 uppercase mb-1 tracking-wider">Bijkomende tekst / Opmerkingen (187)</label><input type="text" class="input-field door-notes" value="..." oninput="autoSave()"></div>
                     </div>
                     <div class="no-print mt-6 bg-red-50 p-4 rounded-lg border border-dashed border-red-200">
                         <label class="block text-[10px] font-bold text-red-700 uppercase mb-2 italic">Foto's van de situatie:</label>
@@ -286,7 +310,7 @@
                                 return art ? `• ${art.n} - ${art.d}` : `• ${n}`;
                             }).join('<br>') || 'Geen'}
                         </div>
-                        <p style="margin-top:15px; font-size:12px;"><strong>Uren:</strong> ${d.hours} | <strong>Opmerkingen:</strong> ${d.notes}</p>
+                        <p style="margin-top:15px; font-size:12px;"><strong>Uren (186):</strong> ${d.hours} | <strong>Bijkomende tekst (187):</strong> ${d.notes}</p>
                     </div>`;
                 
                 if(d.photos && d.photos.length > 0) {
