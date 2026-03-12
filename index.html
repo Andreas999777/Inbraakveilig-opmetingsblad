@@ -52,58 +52,58 @@
         const artikelen = [
             {n:"74", d:"RST00U - Levering ontsluiter fail safe"},
             {n:"75", d:"ST00US - Levering ontsluiter fail secure"},
-            {n:"76", d:"Plaatsing - P.a.i. elektrische ontsluiter", t:0.5, ts:"30 min"},
+            {n:"76", d:"Plaatsing - P.a.i. elektrische ontsluiter", t:0.5},
             {n:"77", d:"32LP - Levering RVS sluitplaat 32LP"},
             {n:"78", d:"19LP - Levering RVS sluitplaat zonder opening"},
-            {n:"79", d:"plaatsing - P.a.i. sluitplaat", t:1, ts:"1 uur"},
+            {n:"79", d:"plaatsing - P.a.i. sluitplaat", t:1},
             {n:"80", d:"TL0152SS - Levering blindrozet"},
-            {n:"81", d:"plaatsing - P.a.i. blindrozet plaatsing", t:0.25, ts:"15 min"},
+            {n:"81", d:"plaatsing - P.a.i. blindrozet plaatsing", t:0.25},
             {n:"82", d:"ML420 - Levering motorslot 1-punt beperkte inbouwdiepte"},
             {n:"83", d:"ML820 - Levering motorslot 1-punt uitlijnende correctie"},
             {n:"84", d:"MB420 - Levering opbouwmodule"},
-            {n:"85", d:"plaatsing - P.a.i. inbouwen van motorslot deurstijl", t:3, ts:"3 uur"},
-            {n:"86", d:"plaatsing - P.a.i. opbouwen van motorslot deurstijl met behulp van opbouwmodule", t:1, ts:"1 uur"},
+            {n:"85", d:"plaatsing - P.a.i. inbouwen van motorslot deurstijl", t:3},
+            {n:"86", d:"plaatsing - P.a.i. opbouwen van motorslot deurstijl met behulp van opbouwmodule", t:1},
             {n:"87", d:"EL432 - Levering motorslot 1-punt deur - enkelzijdig"},
             {n:"88", d:"EL518 - Levering motorslot 1-punt deur - dubbelzijdig"},
-            {n:"89", d:"plaatsing - P.a.i. motorslot 1-punt deurblad", t:4, ts:"4 uur"},
+            {n:"89", d:"plaatsing - P.a.i. motorslot 1-punt deurblad", t:4},
             {n:"90", d:"MP520/GU - Levering motorslot 3-punt"},
-            {n:"91", d:"plaatsing - P.a.i. motorslot 3-punt deurblad", t:5, ts:"5 uur"},
+            {n:"91", d:"plaatsing - P.a.i. motorslot 3-punt deurblad", t:5},
             {n:"92", d:"MODULEC-SA-E - Levering slotvanger voor opbouw"},
-            {n:"93", d:"plaatsing - P.a.i. elektrische slotvanger voor opbouw", t:2, ts:"2 uur"},
+            {n:"93", d:"plaatsing - P.a.i. elektrische slotvanger voor opbouw", t:2},
             {n:"94", d:"LEKQ U4 - Levering elektrisch slot in opbouw"},
-            {n:"95", d:"LIKQ U2 - P.a.i. elektrisch slot in opbouw", t:3, ts:"3 uur"},
+            {n:"95", d:"LIKQ U2 - P.a.i. elektrisch slot in opbouw", t:3},
             {n:"96", d:"17SSMDT - Levering deurmagneet"},
             {n:"97", d:"17DSMDT - Levering deurmagneet dubbel"},
             {n:"98", d:"17WPM - Levering deurmagneet roestvrij waterdicht"},
             {n:"99", d:"17ZLC - Levering beugels of profielen"},
-            {n:"100", d:"plaatsing - P.a.i. deurmagneet", t:1.5, ts:"1,5 uur"},
+            {n:"100", d:"plaatsing - P.a.i. deurmagneet", t:1.5},
             {n:"101", d:"17SGMDT - Levering magneetstrip"},
             {n:"102", d:"17DGMDT - Levering magneetstrip"},
-            {n:"103", d:"plaatsing - P.a.i. magneetstrip", t:3, ts:"3 uur"},
+            {n:"103", d:"plaatsing - P.a.i. magneetstrip", t:3},
             {n:"104", d:"DLF29W - Levering kabeldoorvoer inbouw"},
-            {n:"105", d:"plaatsing - P.a.i. kabeldoorvoer inbouw", t:2, ts:"2 uur"},
+            {n:"105", d:"plaatsing - P.a.i. kabeldoorvoer inbouw", t:2},
             {n:"106", d:"DLS50W - Levering kabeldoorvoer opbouw"},
-            {n:"107", d:"plaatsing - P.a.i. kabeldoorvoer opbouw", t:0.5, ts:"30 min"},
+            {n:"107", d:"plaatsing - P.a.i. kabeldoorvoer opbouw", t:0.5},
             {n:"108", d:"TL3106SS - Levering gewone deurkruk"},
             {n:"109", d:"TL0401SS - Levering vaste deurkruk"},
-            {n:"110", d:"plaatsing - P.a.i. deurkruk", t:0.5, ts:"30 min"},
+            {n:"110", d:"plaatsing - P.a.i. deurkruk", t:0.5},
             {n:"111", d:"B-2116 of B-1916 - Levering anti-paniekslot"},
-            {n:"112", d:"plaatsing - P.a.i. anti-paniekslot", t:1.5, ts:"1,5 uur"},
+            {n:"112", d:"plaatsing - P.a.i. anti-paniekslot", t:1.5},
             {n:"113", d:"B-7400 - Levering paniekbaar"},
-            {n:"114", d:"plaatsing - P.a.i. paniekbaar", t:2.5, ts:"2,5 uur"},
+            {n:"114", d:"plaatsing - P.a.i. paniekbaar", t:2.5},
             {n:"115", d:"TS91 - Levering deursluiter lichte deur"},
             {n:"116", d:"TS93 EN5 - Levering deursluiter zware deur"},
             {n:"117", d:"TS91 + vastzetarm - Levering deursluiter met open stand lichte deur"},
             {n:"118", d:"TS93 EN5 + vastzetarm - Levering deursluiter met open stand zware deur"},
-            {n:"119", d:"plaatsing - P.a.i. deursluiter", t:1, ts:"1 uur"},
+            {n:"119", d:"plaatsing - P.a.i. deursluiter", t:1},
             {n:"120", d:"VERTICLOSE-2 - Levering poortsluiter"},
-            {n:"121", d:"plaatsing - P.a.i. poortsluiter", t:2, ts:"2 uur"},
+            {n:"121", d:"plaatsing - P.a.i. poortsluiter", t:2},
             {n:"180", d:"Levering Mul-T-Lock sleutel"},
             {n:"181", d:"Levering Mul-T-Lock cilinder"},
             {n:"182", d:"Cilinder met draaiknop"},
-            {n:"183", d:"P.a.i. cilinder met draaiknop", t:0.25, ts:"15 min"},
+            {n:"183", d:"P.a.i. cilinder met draaiknop", t:0.25},
             {n:"184", d:"Levering hevelslot"},
-            {n:"185", d:"P.a.i. hevelslot", t:0.5, ts:"30 min"}
+            {n:"185", d:"P.a.i. hevelslot", t:0.5}
         ];
 
         function reindexDoors() {
@@ -163,8 +163,7 @@
                         ${artikelen.map(a => `
                             <label class="flex items-center gap-2 text-[11px] hover:bg-red-50 rounded transition-colors p-1">
                                 <input type="checkbox" class="art-check" data-n="${a.n}" data-d="${a.d}" data-t="${a.t || 0}" onchange="calculateHours(this); autoSave()"> 
-                                <strong>${a.n}</strong> - ${a.d} 
-                                ${a.ts ? `<span class="text-blue-700 bg-blue-100 px-1.5 py-0.5 rounded text-[9px] font-bold ml-1">${a.ts}</span>` : ''}
+                                <strong>${a.n}</strong> - ${a.d}
                             </label>`).join('')}
                     </div>
                     <div class="grid grid-cols-2 gap-4 mb-4">
