@@ -37,7 +37,7 @@
                 <div><label class="block text-[10px] font-bold text-red-600 uppercase mb-1 tracking-wider">Project</label><input type="text" id="projectNaam" class="input-field" value="..."></div>
                 <div><label class="block text-[10px] font-bold text-red-600 uppercase mb-1 tracking-wider">Verkoper</label><input type="text" id="verkoperNaam" class="input-field" value="..."></div>
                 <div class="md:col-span-2"><label class="block text-[10px] font-bold text-red-600 uppercase mb-1 tracking-wider">Adres Project</label><input type="text" id="projectAdres" class="input-field" value="..."></div>
-                <div><label class="block text-[10px] font-bold text-red-600 uppercase mb-1 tracking-wider">Datum (MM-DD-YYYY)</label><input type="text" id="displayDate" class="input-field"></div>
+                <div><label class="block text-[10px] font-bold text-red-600 uppercase mb-1 tracking-wider">Datum</label><input type="text" id="displayDate" class="input-field"></div>
             </div>
         </div>
 
@@ -50,60 +50,60 @@
 
     <script>
         const artikelen = [
-            {n:"74", d:"RST00U - Levering ontsluiter fail safe"},
-            {n:"75", d:"ST00US - Levering ontsluiter fail secure"},
-            {n:"76", d:"Plaatsing - P.a.i. elektrische ontsluiter", t:0.5},
-            {n:"77", d:"32LP - Levering RVS sluitplaat 32LP"},
-            {n:"78", d:"19LP - Levering RVS sluitplaat zonder opening"},
-            {n:"79", d:"plaatsing - P.a.i. sluitplaat", t:1},
-            {n:"80", d:"TL0152SS - Levering blindrozet"},
-            {n:"81", d:"plaatsing - P.a.i. blindrozet plaatsing", t:0.25},
-            {n:"82", d:"ML420 - Levering motorslot 1-punt beperkte inbouwdiepte"},
-            {n:"83", d:"ML820 - Levering motorslot 1-punt uitlijnende correctie"},
-            {n:"84", d:"MB420 - Levering opbouwmodule"},
-            {n:"85", d:"plaatsing - P.a.i. inbouwen van motorslot deurstijl", t:3},
-            {n:"86", d:"plaatsing - P.a.i. opbouwen van motorslot deurstijl met behulp van opbouwmodule", t:1},
-            {n:"87", d:"EL432 - Levering motorslot 1-punt deur - enkelzijdig"},
-            {n:"88", d:"EL518 - Levering motorslot 1-punt deur - dubbelzijdig"},
-            {n:"89", d:"plaatsing - P.a.i. motorslot 1-punt deurblad", t:4},
-            {n:"90", d:"MP520/GU - Levering motorslot 3-punt"},
-            {n:"91", d:"plaatsing - P.a.i. motorslot 3-punt deurblad", t:5},
-            {n:"92", d:"MODULEC-SA-E - Levering slotvanger voor opbouw"},
-            {n:"93", d:"plaatsing - P.a.i. elektrische slotvanger voor opbouw", t:2},
-            {n:"94", d:"LEKQ U4 - Levering elektrisch slot in opbouw"},
-            {n:"95", d:"LIKQ U2 - P.a.i. elektrisch slot in opbouw", t:3},
-            {n:"96", d:"17SSMDT - Levering deurmagneet"},
-            {n:"97", d:"17DSMDT - Levering deurmagneet dubbel"},
-            {n:"98", d:"17WPM - Levering deurmagneet roestvrij waterdicht"},
-            {n:"99", d:"17ZLC - Levering beugels of profielen"},
-            {n:"100", d:"plaatsing - P.a.i. deurmagneet", t:1.5},
-            {n:"101", d:"17SGMDT - Levering magneetstrip"},
-            {n:"102", d:"17DGMDT - Levering magneetstrip"},
-            {n:"103", d:"plaatsing - P.a.i. magneetstrip", t:3},
-            {n:"104", d:"DLF29W - Levering kabeldoorvoer inbouw"},
-            {n:"105", d:"plaatsing - P.a.i. kabeldoorvoer inbouw", t:2},
-            {n:"106", d:"DLS50W - Levering kabeldoorvoer opbouw"},
-            {n:"107", d:"plaatsing - P.a.i. kabeldoorvoer opbouw", t:0.5},
-            {n:"108", d:"TL3106SS - Levering gewone deurkruk"},
-            {n:"109", d:"TL0401SS - Levering vaste deurkruk"},
-            {n:"110", d:"plaatsing - P.a.i. deurkruk", t:0.5},
-            {n:"111", d:"B-2116 of B-1916 - Levering anti-paniekslot"},
-            {n:"112", d:"plaatsing - P.a.i. anti-paniekslot", t:1.5},
-            {n:"113", d:"B-7400 - Levering paniekbaar"},
-            {n:"114", d:"plaatsing - P.a.i. paniekbaar", t:2.5},
-            {n:"115", d:"TS91 - Levering deursluiter lichte deur"},
-            {n:"116", d:"TS93 EN5 - Levering deursluiter zware deur"},
-            {n:"117", d:"TS91 + vastzetarm - Levering deursluiter met open stand lichte deur"},
-            {n:"118", d:"TS93 EN5 + vastzetarm - Levering deursluiter met open stand zware deur"},
-            {n:"119", d:"plaatsing - P.a.i. deursluiter", t:1},
-            {n:"120", d:"VERTICLOSE-2 - Levering poortsluiter"},
-            {n:"121", d:"plaatsing - P.a.i. poortsluiter", t:2},
-            {n:"180", d:"Levering Mul-T-Lock sleutel"},
-            {n:"181", d:"Levering Mul-T-Lock cilinder"},
-            {n:"182", d:"Cilinder met draaiknop"},
-            {n:"183", d:"P.a.i. cilinder met draaiknop", t:0.25},
-            {n:"184", d:"Levering hevelslot"},
-            {n:"185", d:"P.a.i. hevelslot", t:0.5}
+            {n:"74", d:"RST00U - Levering ontsluiter fail safe", p:93.20},
+            {n:"75", d:"ST00US - Levering ontsluiter fail secure", p:95.60},
+            {n:"76", d:"Plaatsing - P.a.i. elektrische ontsluiter", t:0.5, p:27.15},
+            {n:"77", d:"32LP - Levering RVS sluitplaat 32LP", p:32.00},
+            {n:"78", d:"19LP - Levering RVS sluitplaat zonder opening", p:23.35},
+            {n:"79", d:"plaatsing - P.a.i. sluitplaat", t:1, p:50.00},
+            {n:"80", d:"TL0152SS - Levering blindrozet", p:6.11},
+            {n:"81", d:"plaatsing - P.a.i. blindrozet plaatsing", t:0.25, p:20.00},
+            {n:"82", d:"ML420 - Levering motorslot 1-punt beperkte inbouwdiepte", p:613.69},
+            {n:"83", d:"ML820 - Levering motorslot 1-punt uitlijnende correctie", p:883.95},
+            {n:"84", d:"MB420 - Levering opbouwmodule", p:170.77},
+            {n:"85", d:"plaatsing - P.a.i. inbouwen van motorslot deurstijl", t:3, p:320.00},
+            {n:"86", d:"plaatsing - P.a.i. opbouwen van motorslot deurstijl met behulp van opbouwmodule", t:1, p:200.00},
+            {n:"87", d:"EL432 - Levering motorslot 1-punt deur - enkelzijdig", p:1918.50},
+            {n:"88", d:"EL518 - Levering motorslot 1-punt deur - dubbelzijdig", p:1092.50},
+            {n:"89", d:"plaatsing - P.a.i. motorslot 1-punt deurblad", t:4, p:320.00},
+            {n:"90", d:"MP520/GU - Levering motorslot 3-punt", p:2052.11},
+            {n:"91", d:"plaatsing - P.a.i. motorslot 3-punt deurblad", t:5, p:400.00},
+            {n:"92", d:"MODULEC-SA-E - Levering slotvanger voor opbouw", p:280.00},
+            {n:"93", d:"plaatsing - P.a.i. elektrische slotvanger voor opbouw", t:2, p:160.00},
+            {n:"94", d:"LEKQ U4 - Levering elektrisch slot in opbouw", p:235.14},
+            {n:"95", d:"LIKQ U2 - P.a.i. elektrisch slot in opbouw", t:3, p:320.00},
+            {n:"96", d:"17SSMDT - Levering deurmagneet", p:128.60},
+            {n:"97", d:"17DSMDT - Levering deurmagneet dubbel", p:249.00},
+            {n:"98", d:"17WPM - Levering deurmagneet roestvrij waterdicht", p:204.50},
+            {n:"99", d:"17ZLC - Levering beugels of profielen", p:85.60},
+            {n:"100", d:"plaatsing - P.a.i. deurmagneet", t:1.5, p:120.00},
+            {n:"101", d:"17SGMDT - Levering magneetstrip", p:312.40},
+            {n:"102", d:"17DGMDT - Levering magneetstrip", p:702.90},
+            {n:"103", d:"plaatsing - P.a.i. magneetstrip", t:3, p:280.00},
+            {n:"104", d:"DLF29W - Levering kabeldoorvoer inbouw", p:31.00},
+            {n:"105", d:"plaatsing - P.a.i. kabeldoorvoer inbouw", t:2, p:120.00},
+            {n:"106", d:"DLS50W - Levering kabeldoorvoer opbouw", p:14.75},
+            {n:"107", d:"plaatsing - P.a.i. kabeldoorvoer opbouw", t:0.5, p:40.00},
+            {n:"108", d:"TL3106SS - Levering gewone deurkruk", p:12.00},
+            {n:"109", d:"TL0401SS - Levering vaste deurkruk", p:30.00},
+            {n:"110", d:"plaatsing - P.a.i. deurkruk", t:0.5, p:40.00},
+            {n:"111", d:"B-2116 of B-1916 - Levering anti-paniekslot", p:319.00},
+            {n:"112", d:"plaatsing - P.a.i. anti-paniekslot", t:1.5, p:80.00},
+            {n:"113", d:"B-7400 - Levering paniekbaar", p:550.00},
+            {n:"114", d:"plaatsing - P.a.i. paniekbaar", t:2.5, p:240.00},
+            {n:"115", d:"TS91 - Levering deursluiter lichte deur", p:142.00},
+            {n:"116", d:"TS93 EN5 - Levering deursluiter zware deur", p:272.16},
+            {n:"117", d:"TS91 + vastzetarm - Levering deursluiter met open stand lichte deur", p:179.40},
+            {n:"118", d:"TS93 EN5 + vastzetarm - Levering deursluiter met open stand zware deur", p:309.45},
+            {n:"119", d:"plaatsing - P.a.i. deursluiter", t:1, p:120.00},
+            {n:"120", d:"VERTICLOSE-2 - Levering poortsluiter", p:421.00},
+            {n:"121", d:"plaatsing - P.a.i. poortsluiter", t:2, p:160.00},
+            {n:"180", d:"Levering Mul-T-Lock sleutel", p:38.00},
+            {n:"181", d:"Levering Mul-T-Lock cilinder", p:227.00},
+            {n:"182", d:"Cilinder met draaiknop", p:230.00},
+            {n:"183", d:"P.a.i. cilinder met draaiknop", t:0.25, p:20.00},
+            {n:"184", d:"Levering hevelslot", p:152.00},
+            {n:"185", d:"P.a.i. hevelslot", t:0.5, p:40.00}
         ];
 
         function reindexDoors() {
@@ -117,17 +117,19 @@
             label.innerText = (val && val !== '...') ? `DEUR: ${val}` : "Klap Open/Toe";
         }
 
-        function calculateHours(el) {
+        function calculateTotals(el) {
             const section = el.closest('.door-section');
             const checkboxes = section.querySelectorAll('.art-check:checked');
             let totalHours = 0;
+            let totalPrice = 0;
             
             checkboxes.forEach(cb => {
                 totalHours += parseFloat(cb.dataset.t) || 0;
+                totalPrice += parseFloat(cb.dataset.p) || 0;
             });
             
+            // Uren update
             const hoursInput = section.querySelector('.door-hours');
-            
             if (totalHours > 0) {
                 let h = Math.floor(totalHours);
                 let m = Math.round((totalHours - h) * 60);
@@ -136,9 +138,15 @@
                 if (m > 0) timeStr += `${m} min`;
                 hoursInput.value = timeStr.trim();
             } else {
-                if (hoursInput.value.includes('uur') || hoursInput.value.includes('min')) {
-                    hoursInput.value = '...';
-                }
+                if (hoursInput.value.includes('uur') || hoursInput.value.includes('min')) hoursInput.value = '...';
+            }
+
+            // Prijs update
+            const priceInput = section.querySelector('.door-price');
+            if (totalPrice > 0) {
+                priceInput.value = `€ ${totalPrice.toFixed(2).replace('.', ',')}`;
+            } else {
+                priceInput.value = '...';
             }
         }
 
@@ -162,23 +170,22 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1 mb-4 border-y border-red-50 py-4">
                         ${artikelen.map(a => `
                             <label class="flex items-center gap-2 text-[11px] hover:bg-red-50 rounded transition-colors p-1">
-                                <input type="checkbox" class="art-check" data-n="${a.n}" data-d="${a.d}" data-t="${a.t || 0}" onchange="calculateHours(this); autoSave()"> 
-                                <strong>${a.n}</strong> - ${a.d}
+                                <input type="checkbox" class="art-check" data-n="${a.n}" data-d="${a.d}" data-t="${a.t || 0}" data-p="${a.p || 0}" onchange="calculateTotals(this); autoSave()"> 
+                                <span class="flex-1"><strong>${a.n}</strong> - ${a.d}</span>
+                                <span class="text-green-700 font-bold ml-2">€ ${a.p.toFixed(2).replace('.', ',')}</span>
                             </label>`).join('')}
                     </div>
                     <div class="grid grid-cols-2 gap-4 mb-4">
                         <div><label class="block text-[10px] font-bold text-red-600 uppercase mb-1 tracking-wider">Geschatte werkuren (186)</label><input type="text" class="input-field door-hours" value="..." oninput="autoSave()"></div>
-                        <div><label class="block text-[10px] font-bold text-red-600 uppercase mb-1 tracking-wider">Bijkomende tekst / Opmerkingen (187)</label><input type="text" class="input-field door-notes" value="..." oninput="autoSave()"></div>
+                        <div><label class="block text-[10px] font-bold text-red-600 uppercase mb-1 tracking-wider">Totaalprijs excl. BTW</label><input type="text" class="input-field door-price text-green-700 font-bold" value="..." oninput="autoSave()"></div>
                     </div>
+                    <div><label class="block text-[10px] font-bold text-red-600 uppercase mb-1 tracking-wider">Bijkomende tekst / Opmerkingen (187)</label><input type="text" class="input-field door-notes" value="..." oninput="autoSave()"></div>
+                    
                     <div class="no-print mt-6 bg-red-50 p-4 rounded-lg border border-dashed border-red-200">
                         <label class="block text-[10px] font-bold text-red-700 uppercase mb-2 italic">Foto's van de situatie:</label>
                         <div class="flex flex-wrap gap-2">
-                            <label class="action-button bg-slate-800 text-white hover:bg-black cursor-pointer text-[11px]">
-                                📂 Kies Bestanden <input type="file" multiple accept="image/*" class="hidden" onchange="handleImgs(event, this)">
-                            </label>
-                            <label class="action-button bg-red-600 text-white hover:bg-red-700 cursor-pointer text-[11px]">
-                                📸 Open Camera <input type="file" accept="image/*" capture="environment" class="hidden" onchange="handleImgs(event, this)">
-                            </label>
+                            <label class="action-button bg-slate-800 text-white hover:bg-black cursor-pointer text-[11px]">📂 Kies Bestanden <input type="file" multiple accept="image/*" class="hidden" onchange="handleImgs(event, this)"></label>
+                            <label class="action-button bg-red-600 text-white hover:bg-red-700 cursor-pointer text-[11px]">📸 Open Camera <input type="file" accept="image/*" capture="environment" class="hidden" onchange="handleImgs(event, this)"></label>
                         </div>
                         <div class="photo-area flex flex-wrap mt-3"></div>
                     </div>
@@ -211,6 +218,7 @@
             div.querySelector('.door-loc').value = d.location || '...';
             div.querySelector('.door-type').value = d.type || '...';
             div.querySelector('.door-hours').value = d.hours || '...';
+            div.querySelector('.door-price').value = d.totalPrice || '...';
             div.querySelector('.door-notes').value = d.notes || '...';
             if(d.items) d.items.forEach(n => {
                 const cb = div.querySelector(`.art-check[data-n="${n}"]`);
@@ -234,6 +242,7 @@
                     location: s.querySelector('.door-loc').value,
                     type: s.querySelector('.door-type').value,
                     hours: s.querySelector('.door-hours').value,
+                    totalPrice: s.querySelector('.door-price').value,
                     notes: s.querySelector('.door-notes').value,
                     items: Array.from(s.querySelectorAll('.art-check:checked')).map(c => c.dataset.n),
                     photos: Array.from(s.querySelectorAll('.photo-preview-img')).map(img => img.src)
@@ -288,7 +297,7 @@
             const data = getFormData();
             let content = `<div style="font-family:sans-serif; padding:10px;">
                 <div style="border:3px solid #dc2626; padding:15px; margin-bottom:20px;">
-                    <h1 style="color:#dc2626; margin:0 0 5px 0; font-style:italic; text-transform:uppercase;">Opmetingsverslag</h1>
+                    <h1 style="color:#dc2626; margin:0 0 5px 0; font-style:italic; text-transform:uppercase;">Opmetingsverslag & Prijsindicatie</h1>
                     <table style="width:100%; border-collapse:collapse; font-size:12px;">
                         <tr><td style="padding:4px;"><strong>Klant:</strong> ${data.header.klant}</td><td style="padding:4px;"><strong>Project:</strong> ${data.header.project}</td></tr>
                         <tr><td style="padding:4px;"><strong>Adres:</strong> ${data.header.adres}</td><td style="padding:4px;"><strong>Datum:</strong> ${data.header.datum}</td></tr>
@@ -303,13 +312,17 @@
                     <div style="background:#f8f8f8; padding:10px; border-bottom:2px solid #dc2626; font-weight:bold; color:#dc2626;">DEUR ${i+1}: ${d.location} (${d.type})</div>
                     <div style="padding:15px;">
                         <p><strong>Geselecteerde Artikelen:</strong></p>
-                        <div style="column-count:2; font-size:11px;">
+                        <table style="width:100%; font-size:11px; border-collapse:collapse;">
                             ${d.items.map(n => {
                                 const art = artikelen.find(a => a.n === n);
-                                return art ? `• ${art.n} - ${art.d}` : `• ${n}`;
-                            }).join('<br>') || 'Geen'}
+                                return art ? `<tr><td style="padding:2px 0;">• ${art.n} - ${art.d}</td><td style="text-align:right;">€ ${art.p.toFixed(2).replace('.', ',')}</td></tr>` : '';
+                            }).join('') || '<tr><td>Geen artikelen geselecteerd</td></tr>'}
+                        </table>
+                        <div style="margin-top:15px; padding-top:10px; border-top:1px solid #eee; font-size:12px;">
+                            <p><strong>Geschatte werkuren:</strong> ${d.hours}</p>
+                            <p style="color:#15803d;"><strong>Totaal voor deze deur: ${d.totalPrice}</strong> (excl. BTW)</p>
+                            <p><strong>Opmerkingen:</strong> ${d.notes}</p>
                         </div>
-                        <p style="margin-top:15px; font-size:12px;"><strong>Uren (186):</strong> ${d.hours} | <strong>Bijkomende tekst (187):</strong> ${d.notes}</p>
                     </div>`;
                 
                 if(d.photos && d.photos.length > 0) {
@@ -338,7 +351,7 @@
                 renderData(JSON.parse(savedData));
             } else {
                 const d = new Date();
-                document.getElementById('displayDate').value = `${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}-${d.getFullYear()}`;
+                document.getElementById('displayDate').value = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
                 addDoor();
             }
             document.addEventListener('focusin', e => { if(e.target.value === '...') e.target.value = ''; });
